@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<form action="#">
+    <div class="form-group mb-3"> 
+        <h2>註冊帳戶</h2>
+        <label for="username">Username:</label>
+        <input type="text" class="form-control" id="username"/>
+        <label for="password">Password:</label>
+        <input type="password" class="form-control" id="password"/>
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" class="form-control" id="confirm_password"/>
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" id="email"/>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}
