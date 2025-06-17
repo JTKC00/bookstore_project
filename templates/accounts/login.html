@@ -1,12 +1,30 @@
 {% extends "base.html" %}
+{% block title %} | Login {% endblock title %} 
 {% block content %}
-<form action="#">
-    <div class="form-group">
-        <label for="username">Username:</label>
+
+<section id="login" class="bg-light py-3">
+  <div class="container bg-light">
+<form action={% url "accounts:login" %} method="POST">
+{% csrf_token %}
+    <div class="row">
+        <div class="col-md-4 mb-4 mt-2 ml-2">
+            <label for="username">用戶名稱</label>
             <input type="text" class="form-control" id="username"/>
-                <label for="password">Password:</label>
-                    <input type="password" class="form-control" id="password"/>
+            <div class="col-md-12 mb-4 ml-2">   </div> 
+            <label for="password">密碼</label>
+                <input type="password" class="form-control" id="password"/>
+
+        </div>
+    <div class="col-md-12"></div>
+    <div class="row">
+        <div class="col-md-4 mb-3 mt-2 mr-4 ml-4">
+            <button type="submit" class="btn btn-primary">登入</button>
+        </div>
+        <div class="col-md-2 mb-4 mt-2 ml-4">
+            <button type="forget" class="btn btn-primary">忘記密碼</button>
+        </div>
     </div>
-<button type="submit" class="btn btn-primary">Submit</button>
 </form>
-{% endblock %}
+</div>
+</section>
+{% endblock content %}
