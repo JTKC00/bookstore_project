@@ -1,5 +1,10 @@
 from django.shortcuts import render
+from .models import ShopCart, CartItem
 
 # Create your views here.
-def carts(request):
-    return render(request, 'carts/carts.html')
+def cart(request):
+    # Get Shopcart parameter
+    shopCart = ShopCart()
+    cartItems = CartItem.objects.all()
+    context = {"shopCart":shopCart, "cartItems":cartItems}
+    return render(request, 'carts/cart.html')

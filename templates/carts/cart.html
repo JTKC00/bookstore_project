@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+  <header class="bg-dark py-5">
+    <div class="container px-4 px-lg 5 my-5">
+      <div class="text-center text-white">
+        <h1 class="display-4 fw-bolder">Shopping Cart</h1>
+      </div>
+    </div>
+  </header>
+  <br />
+  <body>
+    <div class="container">
+      {% if cartItems %}
+        {% for item in cartItems %}
+          <div class="card mb-3">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <img src="{{ item.photo_1.url }}" class="img-fluid rounded-start" />
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">{{ item.bookId }} xxx</h5>
+                  <br />
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </body>
+{% endblock %}
