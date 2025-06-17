@@ -14,9 +14,9 @@ class Book(models.Model):
     language = models.CharField(max_length=30)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField(default=0)
-    hots = models.BooleanField(default=False)
-    newbook = models.BooleanField(default=False)
-    recommend = models.BooleanField(default=False)
+    is_hots = models.BooleanField(default=False)
+    is_new = models.BooleanField(default=False)
+    is_recommended = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

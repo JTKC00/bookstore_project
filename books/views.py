@@ -17,12 +17,12 @@ def books(request):
     books = Book.objects.all()
     if category:
         try:
-        books = books.filter(category=category)
+            books = books.filter(category=category)
         except ValueError:
             messages.error(request, '無效的類別。')
     if subcategory:
         try:
-        books = books.filter(subcategory=subcategory)
+            books = books.filter(subcategory=subcategory)
         except ValueError:
             messages.error(request, '無效的子類別。')
     return render(request, 'books/categories.html', {
@@ -45,13 +45,13 @@ def hots(request):
     category = request.GET.get('category', 'hots')
     books = Book.objects.all()
     if category == 'hots':
-        books = books.filter(hots=True)
+        books = books.filter(is_hots=True)
         category_name = '熱買推薦'
     elif category == 'newbook':
-        books = books.filter(newbook=True)
+        books = books.filter(is_new=True)
         category_name = '新書上架'
     elif category == 'recommend':
-        books = books.filter(recommend=True)
+        books = books.filter(is_recommended=True)
         category_name = '精選推薦'
     else:
         books = []
