@@ -5,9 +5,18 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
+      <ul class="navbar-nav ">
         <li {% if request.path == '/'%} class="nav-item active {% else %} class="nav-item {% endif %}">
           <a class="nav-link" href="/">首頁</a>
+        </li> 
+        <li {% if 'books/categories' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
+          <a class="nav-link" href="{% url 'books:books' %}">全部書籍</a>
+        </li>
+        <li {% if 'books/hots' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
+          <a class="nav-link" href="{% url 'books:hots' %}">熱門書籍</a>
+        </li>
+        <li {% if 'books/search' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
+          <a class="nav-link" href="{% url 'books:search' %}">搜尋書籍</a>
         </li>
         <li {% if 'about' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
           <a class="nav-link" href="/about">關於我們</a>
@@ -19,13 +28,14 @@
           <a class="nav-link" href="/privacy">隱私政策</a>
         </li>
       </ul>
-      <ul class="navbar-nav ml-auto">
+      {% comment %} <ul class="navbar-nav ml-auto">
         <li {% if 'login' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
           <a class="nav-link" href="/accounts/login/">登入</a>
         </li>
         <li {% if 'register' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
           <a class="nav-link" href="/accounts/register/">註冊</a>
         </li>
-      </ul>
+      </ul> {% endcomment %}
+      </div>
     </div>
-  </div>
+</nav>

@@ -1,1 +1,41 @@
-<h1>Search</h1>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4">搜尋書籍</h1>
+    <form method="get" action="{% url 'books:search' %}" class="mb-4">
+        <div class="form-row">
+            <div class="col-md-4 mb-2">
+                <input type="text" name="q" class="form-control" placeholder="輸入書名或作者" value="{{ request.GET.q }}">
+            </div>
+            <div class="col-md-3 mb-2">
+                <select name="category" class="form-control">
+                    <option value="">全部分類</option>
+                    <option value="literature" {% if request.GET.category == "literature" %}selected{% endif %}>文學</option>
+                    <option value="social" {% if request.GET.category == "social" %}selected{% endif %}>社會科學</option>
+                    <option value="business" {% if request.GET.category == "business" %}selected{% endif %}>商業財經</option>
+                    <option value="food" {% if request.GET.category == "food" %}selected{% endif %}>飲食文化</option>
+                    <option value="inspiration" {% if request.GET.category == "inspiration" %}selected{% endif %}>心理勵志</option>
+                    <option value="other" {% if request.GET.category == "other" %}selected{% endif %}>其他</option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-2">
+                <select name="price" class="form-control">
+                    <option value="">全部價錢</option>
+                    <option value="0-100"{% if request.GET.price == "0-100" %}selected{% endif %}>$0 - $100</option>
+                    <option value="101-200"{% if request.GET.price == "101-200" %}selected{% endif %}>$101 - $200</option>
+                    <option value="201-500"{% if request.GET.price == "201-500" %}selected{% endif %}>$201 - $500</option>
+                    <option value="501-" {% if request.GET.price == "501-" %}selected{% endif %}>$501 以上</option>
+                </select>
+            </div>
+            <div class="col-md-2 mb-2">
+                <button type="submit" class="btn btn-primary btn-block">搜尋</button>
+            </div>
+        </div>
+    </form>
+    <h2 class="mb-4">搜尋結果</h2>
+    <div class="row">
+        <!-- 搜尋結果顯示區域 -->
+    </div>
+</div>
+{% endblock %}

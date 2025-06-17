@@ -1,1 +1,174 @@
-<h1>Books</h1>
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="container my-4">
+  <h1 class="mb-4">書籍分類</h1>
+  <div class="row">
+    <!-- 左邊分類欄 -->
+    <div class="col-md-3">
+      <div class="list-group">
+        {% for category, subcategories in categories.items %}
+        <a class="list-group-item list-group-item-action bg-light text-dark" data-toggle="collapse"
+          href="#collapse-{{ forloop.counter }}" role="button" aria-expanded="false"
+          aria-controls="collapse-{{ forloop.counter }}">{{ category }}</a>
+        <div class="collapse" id="collapse-{{ forloop.counter }}">
+          {% for sub in subcategories %}
+          <a href="?category={{ category }}&subcategory={{ sub }}"
+            class="list-group-item list-group-item-action bg-dark text-light">{{ sub }}</a>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% comment %}
+    <div class="col-md-3">
+      <div class="list-group">
+        <a class="list-group-item list-group-item-action bg-light text-dark" data-toggle="collapse"
+          href="#collapse-literature" role="button" aria-expanded="false" aria-controls="collapse-literature">文學</a>
+        <div class="collapse" id="collapse-literature">
+          <a href="{% url 'books:book_sub_category' category='文學' sub_category='中國文學' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">中國文學</a>
+          <a href="{% url 'books:book_sub_category' category='文學' sub_category='西方文學' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">西方文學</a>
+          <a href="{% url 'books:book_sub_category' category='文學' sub_category='亞洲文學' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">亞洲文學</a>
+          <a href="{% url 'books:book_sub_category' category='文學' sub_category='其他文學' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">其他文學</a>
+        </div>
+        <a class="list-group-item list-group-item-action bg-light text-dark" data-toggle="collapse"
+          href="#collapse-social-sciences" role="button" aria-expanded="false"
+          aria-controls="collapse-social-sciences">社會科學</a>
+        <div class="collapse" id="collapse-social-sciences">
+          <a href="{% url 'books:book_sub_category' category='社會科學' sub_category='心理學' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">心理學</a>
+          <a href="{% url 'books:book_sub_category' category='社會科學' sub_category='社會學' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">社會學</a>
+          <a href="{% url 'books:book_sub_category' category='社會科學' sub_category='政治學' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">政治學</a>
+          <a href="{% url 'books:book_sub_category' category='社會科學' sub_category='人類學' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">人類學</a>
+        </div>
+        <a class="list-group-item list-group-item-action bg-light text-dark" data-toggle="collapse"
+          href="#collapse-business-finance" role="button" aria-expanded="false"
+          aria-controls="collapse-business-finance">商業財經</a>
+        <div class="collapse" id="collapse-business-finance">
+          <a href="{% url 'books:book_sub_category' category='商業財經' sub_category='投資理財' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">投資理財</a>
+          <a href="{% url 'books:book_sub_category' category='商業財經' sub_category='商業管理' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">商業管理</a>
+          <a href="{% url 'books:book_sub_category' category='商業財經' sub_category='市場營銷' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">市場營銷</a>
+          <a href="{% url 'books:book_sub_category' category='商業財經' sub_category='會計財務' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">會計財務</a>
+          <a href="{% url 'books:book_sub_category' category='商業財經' sub_category='經濟學' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">經濟學</a>
+        </div>
+        <a class="list-group-item list-group-item-action bg-light text-dark" data-toggle="collapse"
+          href="#collapse-food-culture" role="button" aria-expanded="false"
+          aria-controls="collapse-food-culture">飲食文化</a>
+        <div class="collapse" id="collapse-food-culture">
+          <a href="{% url 'books:book_sub_category' category='飲食文化' sub_category='烹飪' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">烹飪</a>
+          <a href="{% url 'books:book_sub_category' category='飲食文化' sub_category='飲品' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">飲品</a>
+          <a href="{% url 'books:book_sub_category' category='飲食文化' sub_category='飲食歷史' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">飲食歷史</a>
+          <a href="{% url 'books:book_sub_category' category='飲食文化' sub_category='其他' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">其他</a>
+        </div>
+        <a class="list-group-item list-group-item-action bg-light text-dark" data-toggle="collapse"
+          href="#collapse-inspiration" role="button" aria-expanded="false" aria-controls="collapse-inspiration">心理勵志</a>
+        <div class="collapse" id="collapse-inspiration">
+          <a href="{% url 'books:book_sub_category' category='心理勵志' sub_category='自我提升' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">自我提升</a>
+          <a href="{% url 'books:book_sub_category' category='心理勵志' sub_category='成功學' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">成功學</a>
+          <a href="{% url 'books:book_sub_category' category='心理勵志' sub_category='心靈雞湯' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">心靈雞湯</a>
+          <a href="{% url 'books:book_sub_category' category='心理勵志' sub_category='其他' %}"
+            class="list-group-item list-group-item-action bg-dark text-light">其他</a>
+        </div>
+      </div>
+    </div> {% endcomment %}
+    <!-- 右邊內容欄 -->
+    <div class="col-md-9">
+      <div class="row">
+        {% for book in categories %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="card">
+            <div class="card-body">
+              {% comment %} {% url 'books:book' book.id %} {% endcomment %}
+              <h5 class="card-title"><a href="#">{{ book.title }}</a></h5>
+              <img src="{{ book.image_url }}" class="card-img-top" alt="書籍圖片">
+              <p class="card-text">作者：{{ book.author }}<br>ISBN：{{ book.isbn }}</p>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+          <div class="alert alert-info" role="alert">
+            沒有找到相關書籍。
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      {% comment %}
+      <!-- 示範書籍 -->
+      <div class="col-md-9">
+        <div class="row">
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">這是一本書籍</h5>
+                <img src="#" class="card-img-top" alt="書籍圖片">
+                <p class="card-text">作者：未知<br>ISBN：未知</p>
+                <p class="card-text">出版社：未知</p>
+                <p class="card-text">價格：$0</p>
+                <p class="card-text">簡介：這是一本示範書籍，沒有實際內容。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">這是一本書籍</h5>
+                <img src="#" class="card-img-top" alt="書籍圖片">
+                <p class="card-text">作者：未知<br>ISBN：未知</p>
+                <p class="card-text">出版社：未知</p>
+                <p class="card-text">價格：$0</p>
+                <p class="card-text">簡介：這是一本示範書籍，沒有實際內容。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">這是一本書籍</h5>
+                <img src="#" class="card-img-top" alt="書籍圖片">
+                <p class="card-text">作者：未知<br>ISBN：未知</p>
+                <p class="card-text">出版社：未知</p>
+                <p class="card-text">價格：$0</p>
+                <p class="card-text">簡介：這是一本示範書籍，沒有實際內容。</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">這是一本書籍</h5>
+                <img src="#" class="card-img-top" alt="書籍圖片">
+                <p class="card-text">作者：未知<br>ISBN：未知</p>
+                <p class="card-text">出版社：未知</p>
+                <p class="card-text">價格：$0</p>
+                <p class="card-text">簡介：這是一本示範書籍，沒有實際內容。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endcomment %}
+    </div>
+  </div>
+  {% endblock %}
