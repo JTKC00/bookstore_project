@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4">熱門書籍</h1>
+    <div class="row">
+        <!-- 左邊分類欄 -->
+        <div class="col-md-3">
+            <div class="list-group">
+                {% for key, name in categories %}
+                <a href="?category={{ key }}"
+                   class="list-group-item list-group-item-action {% if selected_category == key %}active{% endif %}">
+                   {{ name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- 右邊內容欄 -->
+        <div class="col-md-9">
+            <h2>{{ category_name }}</h2>
+            <div class="row">
+                {% for book in categories %}
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                    <div class="card">
+                        
+                        <img src="{{ book.photo_large.url }}" class="card-img-top" alt="{{ book.title }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text">作者：{{ book.author }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info">暫無書籍。</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -3,5 +3,31 @@
 <div class="container">
 <h1>歡迎來到開心書店</h1>
 <p>在這裡，您可以找到各種各樣的書籍，滿足您的閱讀需求。</p>
+<div id="bookCarousel" class="carousel slide" data-bs-ride="carousel">
+{% comment %} 係 Bootstrap 走馬燈組件嘅外框 {% endcomment %}
+  <div class="carousel-inner">
+    {% comment %} 走馬燈內部嘅書籍項目 {% endcomment %}
+    {% if books %}
+    {% for book in books %}
+    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+    {% comment %} 如果係第一個項目，就加上 active 類別 {% endcomment %}
+    {% comment %} 書籍圖片、標題同作者嘅顯示 {% endcomment %}
+      <img src="{{ book.photo_large.url }}" class="d-block w-100" alt="{{ book.title }}">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>{{ book.title }}</h5>
+        <p>{{ book.author }}</p>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+{% comment %} 左右切換按鈕，可以切換上一張/下一張。 {% endcomment %}
+  <button class="carousel-control-prev" type="button" data-bs-target="#bookCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#bookCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
 </div>
 {% endblock %}
