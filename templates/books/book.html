@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 <div class="container my-4">
     <h1 class="mb-4">{{ book.title }}</h1>
@@ -7,7 +8,12 @@
             {% if book.photo_large %}
                 <img src="{{ book.photo_large.url }}" class="img-fluid" alt="{{ book.title }}">
             {% else %}
-                <img src="{% static 'img/default_cover.jpg' %}" class="img-fluid" alt="無封面">
+                <img src="{% static 'img/default_book_cover.jpg' %}" class="img-fluid" alt="Default Book Cover">
+            {% endif %}
+            {% if book.photo_small %}
+                <img src="{{ book.photo_small.url }}" class="img-thumbnail mt-2" alt="{{ book.title }} Small Cover">
+            {% else %}
+                <img src="{% static 'img/default_book_cover_small.jpg' %}" class="img-thumbnail mt-2" alt="Default Small Book Cover">
             {% endif %}
         </div>
         <div class="col-md-8">

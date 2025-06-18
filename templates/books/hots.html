@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 <div class="container my-4">
     <h1 class="mb-4">熱門書籍</h1>
@@ -21,8 +22,13 @@
                 {% for book in books %}
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                     <div class="card">
-                        
-                        <img src="{{ book.photo_large.url }}" class="card-img-top" alt="{{ book.title }}">
+                        <a href="{% url 'books:book' book.id %}">
+                            {% if book.photo_large %}
+                                <img src="{{ book.photo_large.url }}" class="card-img-top" alt="{{ book.title }}">
+                            {% else %}
+                                <img src="{% static 'img/default_cover.jpg' %}" class="card-img-top" alt="無封面">
+                            {% endif %}
+                        </a>
                         <div class="card-body">
                             <h5 class="card-title">{{ book.title }}</h5>
                             <p class="card-text">作者：{{ book.author }}</p>
