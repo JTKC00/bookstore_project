@@ -3,7 +3,9 @@
 <div class="container">
 <h1>歡迎來到開心書店</h1>
 <p>在這裡，您可以找到各種各樣的書籍，滿足您的閱讀需求。</p>
-<div id="bookCarousel" class="carousel carousel-dark slide" data-ride="carousel" data-interval="1000">
+<br>
+<h2>精選推薦</h2>
+<div id="bookCarousel" class="carousel slide" data-ride="carousel" data-interval="1000">
         <!-- 係 Bootstrap 走馬燈組件的外框 -->
   <div class="carousel-inner">
             <!-- 走馬燈內部的書籍項目 -->
@@ -18,8 +20,7 @@
 <!-- 走馬燈指示器，顯示當前顯示的書籍項目。 -->
 <ol class="carousel-indicators">
     {% for book in books %}
-    <li data-target="#bookCarousel" data-slide-to="{{ loop.index }}" 
-    class="{% if forloop.first %}active{% endif %}"></li>
+    <li data-target="#bookCarousel" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
     {% endfor %}
 </ol>
         <!-- 左右切換按鈕，可以切換上一張/下一張。 -->
@@ -42,25 +43,33 @@
 .carousel-indicators {
     position: absolute;
     bottom: 10px;
-    left: 80%;
+    left: 85%;
     transform: translateX(-50%);
     list-style: none;
-    display: inline-block;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
     width: auto;
-    padding: 0px;
+    padding: 0;
+    margin: 0;
 }
 
 .carousel-indicators li {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     background-color: rgba(0, 0, 0, 0.5);
     cursor: pointer;
-    margin: 0 5px;
+    margin: 0 6px;
+    background-clip: padding-box;
+    vertical-align: middle;
+    border: none;
+    transition: background-color 0.3s;
+    display: inline-block;
 }
 
 .carousel-indicators li.active {
-    background-color:rgb(0, 0, 0);
+    background-color: #000;
 }
 </style>
 {% endblock %}

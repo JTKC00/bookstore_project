@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'pages.apps.PagesConfig',
     'payments.apps.PaymentsConfig',
     'inquiries.apps.InquiriesConfig',
+    'import_export',
 ]
 
 MIDDLEWARE = [

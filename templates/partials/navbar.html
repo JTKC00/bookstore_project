@@ -13,7 +13,7 @@
           <a class="nav-link" href="{% url 'books:books' %}">全部書籍</a>
         </li>
         <li {% if 'books/hots' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
-          <a class="nav-link" href="{% url 'books:hots' %}">熱門書籍</a>
+          <a class="nav-link" href="{% url 'books:hots' %}">推薦書籍</a>
         </li>
         <li {% if 'books/search' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
           <a class="nav-link" href="{% url 'books:search' %}">搜尋書籍</a>

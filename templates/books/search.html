@@ -36,6 +36,28 @@
     <h2 class="mb-4">搜尋結果</h2>
     <div class="row">
         <!-- 搜尋結果顯示區域 -->
+        {% if books %}
+        {% for book in books %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+            <div class="card">
+                <a href="{% url 'books:book' book.id %}">
+                    {% if book.photo_large %}
+                    <img src="{{ book.photo_large.url }}" class="card-img-top" alt="{{ book.title }}">
+                    {% else %}
+                    <img src="{% static 'img/default_cover.jpg' %}" class="card-img-top" alt="無封面">
+                    {% endif %}
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.title }}</h5>
+                    <p class="card-text">作者：{{ book.author }}</p>
+                </div>  
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">沒有找到相關書籍。</div>
+        {% endfor %}
+        {% endif %}
     </div>
 </div>
 {% endblock %}
