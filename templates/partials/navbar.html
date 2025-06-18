@@ -9,7 +9,7 @@
         <li {% if request.path == '/'%} class="nav-item active {% else %} class="nav-item {% endif %}">
           <a class="nav-link" href="/">首頁</a>
         </li> 
-        <li {% if 'books/categories' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
+        <li {% if 'books/books' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
           <a class="nav-link" href="{% url 'books:books' %}">全部書籍</a>
         </li>
         <li {% if 'books/hots' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">

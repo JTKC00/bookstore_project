@@ -32,3 +32,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ] + debug_toolbar_urls()
 # 多人用要先放
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    # DEBUG 模式下，提供靜態檔案服務
