@@ -27,7 +27,7 @@
           {% for book in books_recommended %}
           <div class="carousel-item {% if forloop.first %}active{% endif %}">
             <a href="{% url 'books:book' book.id %}">
-              <img src="{{ book.photo_large.url }}" class="d-block w-100 carousel-img" alt="{{ book.title }}">
+              <img src="/media/{{ book.photo_large }}" class="d-block w-100 carousel-img" alt="{{ book.title }}">
               <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded px-3 py-2" style="bottom: 20px;">
                 <h5 class="mb-0 text-white">{{ book.title }}</h5>
               </div>
@@ -54,7 +54,7 @@
           {% for book in books_hots %}
           <div class="carousel-item {% if forloop.first %}active{% endif %}">
             <a href="{% url 'books:book' book.id %}">
-              <img src="{{ book.photo_large.url }}" class="d-block w-100 carousel-img" alt="{{ book.title }}">
+              <img src="/media/{{ book.photo_large }}" class="d-block w-100 carousel-img" alt="{{ book.title }}">
               <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded px-3 py-2" style="bottom: 20px;">
                 <h5 class="mb-0 text-white">{{ book.title }}</h5>
               </div>
@@ -81,7 +81,7 @@
           {% for book in books_new %}
           <div class="carousel-item {% if forloop.first %}active{% endif %}">
             <a href="{% url 'books:book' book.id %}">
-              <img src="{{ book.photo_large.url }}" class="d-block w-100 carousel-img" alt="{{ book.title }}">
+              <img src="/{{ book.photo_large }}" class="d-block w-100 carousel-img" alt="{{ book.title }}">
               <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded px-3 py-2" style="bottom: 20px;">
                 <h5 class="mb-0 text-white">{{ book.title }}</h5>
               </div>
