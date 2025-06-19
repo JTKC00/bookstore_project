@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Book
 from django.contrib import messages
+from django.core.paginator import Paginator
+
 # Create your views here.
 
-def books(request):
+def categories(request):
     categories = {
         '文學': ['中國文學', '西方文學', '亞洲文學', '其他文學'],
         '社會科學': ['心理學', '社會學', '政治學', '法律', '其他社會科學'],
@@ -25,9 +27,15 @@ def books(request):
             books = books.filter(subcategory=subcategory)
         except ValueError:
             messages.error(request, '無效的子類別。')
+
+    # 分頁處理
+    paginator = Paginator(books, 6)  # 每頁顯示 6 本書
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'books/categories.html', {
         'categories': categories,
-        'books': books,
+        'books': page_obj,
         'selected_category': category,
         'selected_subcategory': subcategory,
     })

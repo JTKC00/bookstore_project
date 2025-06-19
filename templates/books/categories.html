@@ -72,76 +72,26 @@
   </div>
 </div>
 
-<style>
-.category-bg {
-  background: linear-gradient(120deg, #f8fbff 0%, #f6fff8 100%);
-  min-height: 100vh;
-}
-.category-list {
-  border-radius: 18px;
-  overflow: hidden;
-}
-.category-main {
-  font-weight: bold;
-  font-size: 1.08rem;
-  transition: background 0.2s, color 0.2s;
-}
-.category-main:hover, .category-main:focus {
-  background: #4f8cff !important;
-  color: #fff !important;
-}
-.category-sub {
-  padding-left: 2em;
-  font-size: 0.98rem;
-  transition: background 0.2s, color 0.2s;
-}
-.category-sub:hover, .category-sub:focus {
-  background: #e3f0ff !important;
-  color: #1a73e8 !important;
-}
-.book-card {
-  border-radius: 18px;
-  border: none;
-  transition: box-shadow 0.2s, transform 0.2s;
-  background: #fff;
-}
-.book-card:hover {
-  box-shadow: 0 8px 32px rgba(79,140,255,0.15);
-  transform: translateY(-4px) scale(1.03);
-}
-.card-title {
-  font-size: 1.1rem;
-  min-height: 2.5em;
-  text-align: center;
-}
-.book-link {
-  color: #1a237e;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.book-link:hover {
-  color: #38c6ff;
-  text-decoration: underline;
-}
-.card-img-top {
-  max-height: 200px;
-  min-height: 200px;
-  object-fit: contain;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-  width: auto;
-  max-width: 100%;
-  background: #f8fbff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(79,140,255,0.07);
-}
-.card-body {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding-bottom: 1.2em;
-}
-</style>
+<!-- Pagination -->
+  <div class="row">
+    <div class="col-12 text-center mt-4">
+      {% if books.has_previous %}
+      <a href="?page={{ books.previous_page_number }}&category={{ category }}&subcategory={{ subcategory }}"
+        class="btn btn-secondary">上一頁</a>
+      {% endif %}
+      <span class="mx-2">第 {{ books.number }} 頁，共 {{ books.paginator.num_pages }} 頁</span>
+      {% if books.paginator.count > 0 %}
+      <span class="mx-2">總計 {{ books.paginator.count }} 本書</span>
+      {% else %}
+      <span class="mx-2">沒有書籍可顯示</span>
+      {% endif %}
+      {% if books.paginator.num_pages > 1 %}
+      <span class="mx-2">每頁顯示 {{ books.paginator.per_page }} 本書</span>
+      {% endif %}
+      {% if books.has_next %}
+      <a href="?page={{ books.next_page_number }}&category={{ category }}&subcategory={{ subcategory }}"
+        class="btn btn-secondary">下一頁</a>
+      {% endif %}
+    </div>
+  </div>
 {% endblock %}

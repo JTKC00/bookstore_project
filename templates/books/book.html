@@ -1,33 +1,67 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<div class="container my-4">
-    <h1 class="mb-4">{{ book.title }}</h1>
-    <div class="row">
-        <div class="col-md-4">
-            {% if book.photo_large %}
-                <img src="{{ book.photo_large.url }}" class="img-fluid" alt="{{ book.title }}">
-            {% else %}
-                <img src="{% static 'img/default_book_cover.jpg' %}" class="img-fluid" alt="Default Book Cover">
-            {% endif %}
-            {% if book.photo_small %}
-                <img src="{{ book.photo_small.url }}" class="img-thumbnail mt-2" alt="{{ book.title }} Small Cover">
-            {% else %}
-                <img src="{% static 'img/default_book_cover_small.jpg' %}" class="img-thumbnail mt-2" alt="Default Small Book Cover">
-            {% endif %}
+<div class="book-bg py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="card shadow-lg border-0 rounded-4 p-4 mb-5">
+          <div class="row g-4 align-items-center">
+            <!-- 書本圖片 -->
+            <div class="col-md-4 text-center">
+              <div class="mb-3">
+                {% if book.photo_large %}
+                  <img src="{{ book.photo_large.url }}" class="img-fluid book-cover-lg shadow rounded-3" alt="{{ book.title }}">
+                {% else %}
+                  <img src="{% static 'img/default_book_cover.jpg' %}" class="img-fluid book-cover-lg shadow rounded-3" alt="Default Book Cover">
+                {% endif %}
+              </div>
+              <div>
+                {% if book.photo_small %}
+                  <img src="{{ book.photo_small.url }}" class="img-thumbnail book-cover-sm mt-2" alt="{{ book.title }} Small Cover">
+                {% else %}
+                  <img src="{% static 'img/default_book_cover_small.jpg' %}" class="img-thumbnail book-cover-sm mt-2" alt="Default Small Book Cover">
+                {% endif %}
+              </div>
+            </div>
+            <!-- 書本資訊 -->
+            <div class="col-md-8">
+              <h1 class="mb-3 book-title">{{ book.title }}</h1>
+              <div class="mb-3">
+                <span class="badge bg-primary bg-opacity-75 me-2">{{ book.category }}</span>
+                {% if book.subcategory %}
+                  <span class="badge bg-info bg-opacity-75">{{ book.subcategory }}</span>
+                {% endif %}
+              </div>
+              <ul class="list-unstyled book-info-list mb-4">
+                <li><strong>作者：</strong>{{ book.author }}</li>
+                <li><strong>ISBN：</strong><span class="text-monospace">{{ book.isbn }}</span></li>
+                <li><strong>語言：</strong>{{ book.language }}</li>
+                <li><strong>出版社：</strong>{{ book.publisher }}</li>
+                <li><strong>價格：</strong><span class="text-success fw-bold" style="font-size:1.2em;">${{ book.price }}</span></li>
+                <li><strong>庫存：</strong>
+                  {% if book.stock > 0 %}
+                    <span class="text-success fw-bold">{{ book.stock }}</span>
+                  {% else %}
+                    <span class="text-danger fw-bold">售罄</span>
+                  {% endif %}
+                </li>
+              </ul>
+              <div class="mb-2">
+                <strong>簡介：</strong>
+                <p class="book-intro mt-2">{{ book.introduction|linebreaksbr }}</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-md-8">
-            <h2>書籍資訊</h2>
-            <p><strong>作者：</strong>{{ book.author }}</p>
-            <p><strong>ISBN：</strong>{{ book.isbn }}</p>
-            <p><strong>分類：</strong>{{ book.category }}</p>
-            <p><strong>子分類：</strong>{{ book.subcategory }}</p>
-            <p><strong>語言：</strong>{{ book.language }}</p>
-            <p><strong>價格：</strong>${{ book.price }}</p>
-            <p><strong>庫存：</strong>{{ book.stock }}</p>
-            <p><strong>簡介：</strong>{{ book.introduction }}</p>
-            <p><strong>出版社：</strong>{{ book.publisher }}</p>
+        <div class="text-center">
+          <a href="{% url 'books:categories' %}" class="btn btn-contact btn-lg">
+            <span style="font-size:1.2em;vertical-align:-2px;">⬅️</span> 返回書籍分類
+          </a>
         </div>
+      </div>
     </div>
+  </div>
 </div>
+
 {% endblock %}
