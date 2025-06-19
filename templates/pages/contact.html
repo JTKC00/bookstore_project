@@ -1,5 +1,84 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>聯繫我們</h1>
-<p>如果您對我們的服務有任何疑問或建議，請隨時與我們聯繫。</p>
+<div class="contact-bg py-5">
+  <div class="container">
+    <h1 class="mb-5 text-center" style="font-weight:bold; letter-spacing:2px;">
+      <span style="font-size:2.5rem;">✉️ 聯絡我們</span>
+    </h1>
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+        <div class="card shadow-lg contact-card mb-5">
+          <div class="card-body">
+            <h4 class="card-title mb-4 text-primary" style="font-weight:bold;">
+              我們樂意聆聽您的聲音
+            </h4>
+            <p class="mb-4" style="font-size:1.1rem;">
+              如果您對我們的服務有任何疑問或建議，請隨時與我們聯繫，我們會盡快回覆您！
+            </p>
+            <ul class="contact-list list-unstyled mb-0">
+              <li class="mb-3">
+                <span style="font-size:1.3em;vertical-align:-2px;">📧</span>
+                <strong>Email：</strong> happybook@example.com
+              </li>
+              <li class="mb-3">
+                <span style="font-size:1.3em;vertical-align:-2px;">📞</span>
+                <strong>電話：</strong> 1234 5678
+              </li>
+              <li class="mb-3">
+                <span style="font-size:1.3em;vertical-align:-2px;">💬</span>
+                <strong>WhatsApp：</strong> 9123 4567
+              </li>
+              <li>
+                <span style="font-size:1.3em;vertical-align:-2px;">🌐</span>
+                <strong>Facebook / Instagram：</strong> @happybookstore
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="text-center">
+          <a href="{% url 'pages:about' %}" class="btn btn-contact btn-lg">
+            <span style="font-size:1.2em;vertical-align:-2px;">📚</span> 關於我們
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.contact-bg {
+  background: linear-gradient(120deg, #f8fbff 0%, #f6fff8 100%);
+  min-height: 100vh;
+}
+.contact-card {
+  border-radius: 24px;
+  border: none;
+}
+.card-title {
+  letter-spacing: 1px;
+}
+.contact-list li {
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+.btn-contact {
+  background: linear-gradient(90deg, #4f8cff, #38c6ff);
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 4px 16px rgba(79,140,255,0.15);
+  color: #fff;
+  padding: 0.75rem 2.5rem;
+  font-size: 1.2rem;
+  transition: background 0.3s, transform 0.2s;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.btn-contact:hover {
+  background: linear-gradient(90deg, #38c6ff, #4f8cff);
+  color: #fff;
+  transform: translateY(-3px) scale(1.05);
+  text-decoration: none;
+}
+</style>
 {% endblock %}
+

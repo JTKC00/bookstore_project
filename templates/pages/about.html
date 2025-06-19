@@ -1,5 +1,91 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>關於我們</h1>
-<p>我們是一個專注於提供高品質內容的團隊，致力於為用戶帶來最佳的體驗。</p>
+<div class="about-bg py-5">
+  <div class="container">
+    <h1 class="mb-5 text-center" style="font-weight:bold; letter-spacing:2px;">
+      <span style="font-size:2.5rem;">📚 關於我們</span>
+    </h1>
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow-lg mb-5 about-card">
+          <div class="card-body">
+            <h3 class="card-title mb-3 text-center text-primary" style="font-weight:bold;">開心書店的故事</h3>
+            <p class="card-text" style="font-size:1.15rem;">
+              你是否也在尋找這樣一個地方？<br>
+              這裡沒有喧囂，只有書頁翻動的沙沙聲；沒有匆忙，只有沉浸閱讀的寧靜；沒有距離，只有志同道合的靈魂相遇。
+            </p>
+            <p class="card-text" style="font-size:1.15rem;">
+              <strong>開心書店</strong>，是我們為你準備的「精神烏托邦」。無論你是想逃離日常，還是尋找靈感，這裡的每一本書都願陪你度過一段溫柔時光。因為我們相信，熱愛閱讀的人，終會在這裡找到屬於自己的答案。
+            </p>
+          </div>
+        </div>
+        <div class="card shadow-lg mb-5 about-card">
+          <div class="card-body">
+            <h4 class="card-title mb-3 text-success" style="font-weight:bold;">我們的理念</h4>
+            <ul class="about-list">
+              <li>精選優質書籍，滿足不同讀者的閱讀需求</li>
+              <li>營造溫馨、寧靜的閱讀氛圍</li>
+              <li>推動閱讀文化，連結每一位愛書人</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card shadow-lg mb-5 about-card">
+          <div class="card-body">
+            <h4 class="card-title mb-3 text-info" style="font-weight:bold;">我們的服務</h4>
+            <ul class="about-list">
+              <li>多元化書籍分類，輕鬆搜尋與發現</li>
+              <li>新書、熱門、精選推薦，助你選書無難度</li>
+              <li>線上客服（WhatsApp），隨時解答你的疑問</li>
+            </ul>
+          </div>
+        </div>
+        <div class="text-center mt-5 mb-3">
+          <a href="{% url 'pages:contact' %}" class="btn btn-contact btn-lg">
+            <span style="font-size:1.3em;vertical-align:-2px;">✉️</span> 聯絡我們
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.about-bg {
+  background: linear-gradient(120deg, #f8fbff 0%, #f6fff8 100%);
+  min-height: 100vh;
+}
+.about-card {
+  border-radius: 24px;
+  border: none;
+}
+.card-title {
+  letter-spacing: 1px;
+}
+.about-list {
+  font-size: 1.08rem;
+  padding-left: 1.2em;
+}
+.about-list li {
+  margin-bottom: 0.5em;
+  line-height: 1.7;
+}
+.btn-contact {
+  background: linear-gradient(90deg, #4f8cff, #38c6ff);
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 4px 16px rgba(79,140,255,0.15);
+  color: #fff;
+  padding: 0.75rem 2.5rem;
+  font-size: 1.2rem;
+  transition: background 0.3s, transform 0.2s;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.btn-contact:hover {
+  background: linear-gradient(90deg, #38c6ff, #4f8cff);
+  color: #fff;
+  transform: translateY(-3px) scale(1.05);
+  text-decoration: none;
+}
+</style>
 {% endblock %}

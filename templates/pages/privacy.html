@@ -1,5 +1,79 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>隱私政策</h1>
-<p>我們非常重視用戶的隱私權，並承諾保護您的個人信息。</p>
+<div class="privacy-bg py-5">
+  <div class="container">
+    <h1 class="mb-5 text-center" style="font-weight:bold; letter-spacing:2px;">
+      <span style="font-size:2.5rem;">🔒 私隱政策</span>
+    </h1>
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow-lg privacy-card mb-5">
+          <div class="card-body">
+            <h4 class="card-title mb-4 text-primary" style="font-weight:bold;">
+              我們如何保障您的個人資料？
+            </h4>
+            <p class="mb-3" style="font-size:1.1rem;">
+              開心書店非常重視您的私隱權益，並承諾妥善保護您的個人資料。請細閱以下政策內容，了解我們如何收集、使用及保護您的資料。
+            </p>
+            <ul class="privacy-list">
+              <li><strong>資料收集：</strong>我們只會在您註冊、購物或聯絡我們時收集必要的個人資料。</li>
+              <li><strong>用途說明：</strong>您的資料只會用於訂單處理、客戶服務及推廣資訊發送，不會出售或轉讓予第三方。</li>
+              <li><strong>資料安全：</strong>我們採用加密技術及嚴格管理措施，保障您的資料安全。</li>
+              <li><strong>查閱及更正：</strong>您有權隨時查閱、更正或刪除您的個人資料。</li>
+              <li><strong>政策更新：</strong>如有任何私隱政策變更，我們會於本頁公佈。</li>
+            </ul>
+            <p class="mt-4" style="font-size:1rem;">
+              如有任何疑問，歡迎隨時 <a href="{% url 'pages:contact' %}" class="text-primary" style="text-decoration:underline;">聯絡我們</a>。
+            </p>
+          </div>
+        </div>
+        <div class="text-center">
+          <a href="{% url 'pages:about' %}" class="btn btn-contact btn-lg">
+            <span style="font-size:1.2em;vertical-align:-2px;">📚</span> 關於我們
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.privacy-bg {
+  background: linear-gradient(120deg, #f8fbff 0%, #f6fff8 100%);
+  min-height: 100vh;
+}
+.privacy-card {
+  border-radius: 24px;
+  border: none;
+}
+.card-title {
+  letter-spacing: 1px;
+}
+.privacy-list {
+  font-size: 1.08rem;
+  padding-left: 1.2em;
+}
+.privacy-list li {
+  margin-bottom: 0.7em;
+  line-height: 1.7;
+}
+.btn-contact {
+  background: linear-gradient(90deg, #4f8cff, #38c6ff);
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 4px 16px rgba(79,140,255,0.15);
+  color: #fff;
+  padding: 0.75rem 2.5rem;
+  font-size: 1.2rem;
+  transition: background 0.3s, transform 0.2s;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.btn-contact:hover {
+  background: linear-gradient(90deg, #38c6ff, #4f8cff);
+  color: #fff;
+  transform: translateY(-3px) scale(1.05);
+  text-decoration: none;
+}
+</style>
 {% endblock %}

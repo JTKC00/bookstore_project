@@ -1,75 +1,178 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container">
-<h1>歡迎來到開心書店</h1>
-<p>在這裡，您可以找到各種各樣的書籍，滿足您的閱讀需求。</p>
-<br>
-<h2>精選推薦</h2>
-<div id="bookCarousel" class="carousel slide" data-ride="carousel" data-interval="1000">
-        <!-- 係 Bootstrap 走馬燈組件的外框 -->
-  <div class="carousel-inner">
-            <!-- 走馬燈內部的書籍項目 -->
-    {% for book in books %}
-    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-      <a href="{% url 'books:book' book.id %}">
-        <img src="{{ book.photo_large.url }}" class="d-block w-100" alt="{{ book.title }}">
-      </a>
+<div class="container-fluid px-0">
+  <!-- Banner 區塊 -->
+  <div class="jumbotron jumbotron-fluid text-white text-center mb-5" style="background: linear-gradient(90deg, #4f8cff 0%, #38c6ff 100%); border-radius: 0 0 40px 40px;">
+    <div class="container py-5">
+      <h1 class="display-4 mb-3" style="font-weight: bold;">
+        <span style="font-size:2.5rem;">🌈 歡迎來到開心書店</span>
+      </h1>
+      <p class="lead" style="font-size:1.3rem;">
+        每一本書都是打開快樂大門的鑰匙。<br>
+        讓文字撫慰心靈，讓閱讀成為日常最治癒的儀式感！
+      </p>
     </div>
-    {% endfor %}
+  </div>
 </div>
-<!-- 走馬燈指示器，顯示當前顯示的書籍項目。 -->
-<ol class="carousel-indicators">
-    {% for book in books %}
-    <li data-target="#bookCarousel" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
-    {% endfor %}
-</ol>
-        <!-- 左右切換按鈕，可以切換上一張/下一張。 -->
-  {% comment %} <button class="carousel-control-prev bg-transparents" type="button" data-target="#bookCarousel" data-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-  </button>
-  <button class="carousel-control-next bg-transparents" type="button" data-target="#bookCarousel" data-slide="next">
-    <span class="carousel-control-next-icon"></span>
-  </button> {% endcomment %}
-</div>
+
+<div class="container">
+  <!-- 精選推薦 -->
+  <section class="mb-5 pb-4" style="background: #f8fbff; border-radius: 24px;">
+    <h2 class="section-title pt-4 mb-2 text-primary" style="font-weight: bold;">精選推薦</h2>
+    <p class="mb-4 text-secondary">我們為您精心挑選了一些書籍，這些書籍都是經過我們的細心評估。</p>
+    <div class="carousel-wrapper position-relative">
+      <div id="bookCarouselRecommended" class="carousel slide shadow rounded" data-ride="carousel" data-interval="2500">
+        <div class="carousel-inner">
+          {% for book in books_recommended %}
+          <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <a href="{% url 'books:book' book.id %}">
+              <img src="{{ book.photo_large.url }}" class="d-block w-100 carousel-img" alt="{{ book.title }}">
+              <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded px-3 py-2" style="bottom: 20px;">
+                <h5 class="mb-0 text-white">{{ book.title }}</h5>
+              </div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+        <ol class="carousel-indicators">
+          {% for book in books_recommended %}
+          <li data-target="#bookCarouselRecommended" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
+          {% endfor %}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 熱門書籍 -->
+  <section class="mb-5 pb-4" style="background: #fff9f3; border-radius: 24px;">
+    <h2 class="section-title pt-4 mb-2 text-danger" style="font-weight: bold;">熱門書籍</h2>
+    <p class="mb-4 text-secondary">這些書籍是我們平台上最受歡迎的書籍，深受讀者喜愛。</p>
+    <div class="carousel-wrapper position-relative">
+      <div id="bookCarouselHots" class="carousel slide shadow rounded" data-ride="carousel" data-interval="2500">
+        <div class="carousel-inner">
+          {% for book in books_hots %}
+          <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <a href="{% url 'books:book' book.id %}">
+              <img src="{{ book.photo_large.url }}" class="d-block w-100 carousel-img" alt="{{ book.title }}">
+              <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded px-3 py-2" style="bottom: 20px;">
+                <h5 class="mb-0 text-white">{{ book.title }}</h5>
+              </div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+        <ol class="carousel-indicators">
+          {% for book in books_hots %}
+          <li data-target="#bookCarouselHots" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
+          {% endfor %}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 新書上架 -->
+  <section class="mb-5 pb-4" style="background: #f6fff8; border-radius: 24px;">
+    <h2 class="section-title pt-4 mb-2 text-success" style="font-weight: bold;">新書上架</h2>
+    <p class="mb-4 text-secondary">這些是我們最新上架的書籍，為您帶來最新的閱讀體驗。</p>
+    <div class="carousel-wrapper position-relative">
+      <div id="bookCarouselNew" class="carousel slide shadow rounded" data-ride="carousel" data-interval="2500">
+        <div class="carousel-inner">
+          {% for book in books_new %}
+          <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <a href="{% url 'books:book' book.id %}">
+              <img src="{{ book.photo_large.url }}" class="d-block w-100 carousel-img" alt="{{ book.title }}">
+              <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded px-3 py-2" style="bottom: 20px;">
+                <h5 class="mb-0 text-white">{{ book.title }}</h5>
+              </div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+        <ol class="carousel-indicators">
+          {% for book in books_new %}
+          <li data-target="#bookCarouselNew" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
+          {% endfor %}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA 行動按鈕 -->
+  <div class="mt-5 text-center">
+    <h3 class="mb-4" style="font-weight: bold;">心動不如行動，請立即開始您的閱讀冒險</h3>
+    <a href="{% url 'books:categories' %}" class="btn btn-contact btn-lg">
+      <i class="bi bi-book-half mr-2"></i>瀏覽所有書籍
+    </a>
+  </div>
 </div>
 
 <style>
-.carousel-item img {
-    max-height: 400px;
-    width: auto;
-    margin: 0 auto;
-    object-fit: contain;
+.jumbotron {
+  background: linear-gradient(90deg, #4f8cff 0%, #38c6ff 100%);
+  border-radius: 0 0 40px 40px;
+}
+.carousel-wrapper {
+  padding: 1.5rem 0 1rem 0;
+}
+.carousel-img {
+  max-height: 350px;
+  min-height: 220px;
+  object-fit: contain;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  background: #fff;
 }
 .carousel-indicators {
-    position: absolute;
-    bottom: 10px;
-    left: 85%;
-    transform: translateX(-50%);
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
-    width: auto;
-    padding: 0;
-    margin: 0;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  width: auto;
+  padding: 0;
+  margin: 0;
 }
-
 .carousel-indicators li {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.5);
-    cursor: pointer;
-    margin: 0 6px;
-    background-clip: padding-box;
-    vertical-align: middle;
-    border: none;
-    transition: background-color 0.3s;
-    display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  margin: 0 6px;
+  background-clip: padding-box;
+  vertical-align: middle;
+  border: none;
+  transition: background-color 0.3s;
+  display: inline-block;
 }
-
 .carousel-indicators li.active {
-    background-color: #000;
+  background-color: #38c6ff;
+}
+.carousel-caption {
+  background: rgba(0,0,0,0.5);
+  border-radius: 12px;
+}
+.btn-contact {
+  background: linear-gradient(90deg, #4f8cff, #38c6ff);
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 4px 16px rgba(79,140,255,0.15);
+  color: #fff;
+  padding: 0.75rem 2.5rem;
+  font-size: 1.2rem;
+  transition: background 0.3s, transform 0.2s;
+}
+.btn-contact:hover {
+  background: linear-gradient(90deg, #38c6ff, #4f8cff);
+  color: #fff;
+  transform: translateY(-3px) scale(1.05);
+}
+.section-title {
+  font-size: 2rem;
+  letter-spacing: 1px;
 }
 </style>
 {% endblock %}

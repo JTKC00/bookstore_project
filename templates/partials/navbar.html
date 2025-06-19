@@ -9,8 +9,8 @@
         <li {% if request.path == '/'%} class="nav-item active {% else %} class="nav-item {% endif %}">
           <a class="nav-link" href="/">首頁</a>
         </li> 
-        <li {% if 'books/books' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
-          <a class="nav-link" href="{% url 'books:books' %}">全部書籍</a>
+        <li {% if 'books/categories' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
+          <a class="nav-link" href="{% url 'books:categories' %}">全部書籍</a>
         </li>
         <li {% if 'books/hots' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
           <a class="nav-link" href="{% url 'books:hots' %}">推薦書籍</a>
@@ -39,3 +39,26 @@
       </div>
     </div>
 </nav>
+
+<style>
+.navbar {
+  box-shadow: 0 2px 12px rgba(79,140,255,0.08);
+  border-radius: 0 0 18px 18px;
+}
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+}
+.navbar-nav .nav-link {
+  font-size: 1.08rem;
+  font-weight: 500;
+  border-radius: 18px;
+  margin-right: 0.5em;
+  transition: background 0.2s, color 0.2s;
+}
+.navbar-nav .nav-link:hover, .navbar-nav .nav-item.active .nav-link {
+  background: #4f8cff;
+  color: #fff !important;
+}
+</style>

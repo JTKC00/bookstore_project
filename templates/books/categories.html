@@ -2,51 +2,146 @@
 {% load static %}
 
 {% block content %}
-<div class="container my-4">
-  <h1 class="mb-4">書籍分類</h1>
-  <div class="row">
-    <!-- 左邊分類欄 -->
-    <div class="col-md-3">
-      <div class="list-group">
-        {% for category, subcategories in categories.items %}
-        <a class="list-group-item list-group-item-action bg-light text-dark" data-toggle="collapse"
-          href="#collapse-{{ forloop.counter }}" role="button" aria-expanded="false"
-          aria-controls="collapse-{{ forloop.counter }}">{{ category }}</a>
-        <div class="collapse" id="collapse-{{ forloop.counter }}">
-          {% for sub in subcategories %}
-          <a href="?category={{ category }}&subcategory={{ sub }}"
-            class="list-group-item list-group-item-action bg-dark text-light">{{ sub }}</a>
+<div class="category-bg py-4">
+  <div class="container">
+    <h1 class="mb-5 text-center" style="font-weight:bold; letter-spacing:2px;">
+      <span style="font-size:2.2rem;">📚 書籍分類</span>
+    </h1>
+    <div class="row">
+      <!-- 左邊分類欄 -->
+      <div class="col-md-3 mb-4">
+        <div class="list-group shadow-sm rounded-3 category-list">
+          {% for category, subcategories_list in categories.items %}
+          <a class="list-group-item list-group-item-action bg-light text-dark category-main"
+            data-toggle="collapse"
+            href="#collapse-{{ forloop.counter }}" role="button" aria-expanded="false"
+            aria-controls="collapse-{{ forloop.counter }}">
+            <span style="font-size:1.1em;">{{ category }}</span>
+          </a>
+          <div class="collapse" id="collapse-{{ forloop.counter }}">
+            {% for sub in subcategories_list %}
+            <a href="?category={{ category }}&subcategory={{ sub }}"
+              class="list-group-item list-group-item-action bg-white text-primary category-sub">
+              <span style="font-size:1em;">{{ sub }}</span>
+            </a>
+            {% endfor %}
+          </div>
           {% endfor %}
         </div>
-        {% endfor %}
       </div>
-    </div>
 
-    <!-- 右邊內容欄 -->
-    <div class="col-md-9">
-      <div class="row">
-        {% for book in books %}
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title"><a href="{% url 'books:book' book.id %}">{{ book.title }}</a></h5>
-              <a href="{% url 'books:book' book.id %}">
-                <img src="{{ book.photo_large.url }}" class="card-img-top" alt="{{ book.title }}">
-              </a>
-              <p class="card-text">作者：{{ book.author }}<br>ISBN：{{ book.isbn }}</p>
+      <!-- 右邊內容欄 -->
+      <div class="col-md-9">
+        <div class="row">
+          {% for book in books %}
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 px-2">
+            <div class="card book-card h-100 shadow-sm">
+              <h5 class="card-title text-center mt-3 mb-2" style="font-weight:bold;">
+                <a href="{% url 'books:book' book.id %}" class="book-link">{{ book.title }}</a>
+              </h5>
+              <div class="card-body d-flex flex-column align-items-center">
+                <a href="{% url 'books:book' book.id %}">
+                  {% if book.photo_large %}
+                  <img src="{{ book.photo_large.url }}" class="card-img-top mb-3" alt="{{ book.title }}">
+                  {% else %}
+                  <img src="{% static 'img/default_cover.jpg' %}" class="card-img-top mb-3" alt="無封面">
+                  {% endif %}
+                </a>
+                <p class="card-text text-center mb-1" style="font-size:0.98em;">
+                  作者：{{ book.author }}
+                </p>
+                <p class="card-text text-center mb-1" style="font-size:0.98em;">
+                  價錢：<span class="text-success">${{ book.price }}</span>
+                </p>
+                <p class="card-text text-center" style="font-size:0.93em;">
+                  ISBN：{{ book.isbn }}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        {% empty %}
-        <div class="col-12">
-          <div class="alert alert-info" role="alert">
-            沒有找到相關書籍。
+          {% empty %}
+          <div class="col-12">
+            <div class="alert alert-info" role="alert">
+              沒有找到相關書籍。
+            </div>
           </div>
+          {% endfor %}
         </div>
-        {% endfor %}
       </div>
-
-
     </div>
   </div>
-  {% endblock %}
+</div>
+
+<style>
+.category-bg {
+  background: linear-gradient(120deg, #f8fbff 0%, #f6fff8 100%);
+  min-height: 100vh;
+}
+.category-list {
+  border-radius: 18px;
+  overflow: hidden;
+}
+.category-main {
+  font-weight: bold;
+  font-size: 1.08rem;
+  transition: background 0.2s, color 0.2s;
+}
+.category-main:hover, .category-main:focus {
+  background: #4f8cff !important;
+  color: #fff !important;
+}
+.category-sub {
+  padding-left: 2em;
+  font-size: 0.98rem;
+  transition: background 0.2s, color 0.2s;
+}
+.category-sub:hover, .category-sub:focus {
+  background: #e3f0ff !important;
+  color: #1a73e8 !important;
+}
+.book-card {
+  border-radius: 18px;
+  border: none;
+  transition: box-shadow 0.2s, transform 0.2s;
+  background: #fff;
+}
+.book-card:hover {
+  box-shadow: 0 8px 32px rgba(79,140,255,0.15);
+  transform: translateY(-4px) scale(1.03);
+}
+.card-title {
+  font-size: 1.1rem;
+  min-height: 2.5em;
+  text-align: center;
+}
+.book-link {
+  color: #1a237e;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.book-link:hover {
+  color: #38c6ff;
+  text-decoration: underline;
+}
+.card-img-top {
+  max-height: 200px;
+  min-height: 200px;
+  object-fit: contain;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  width: auto;
+  max-width: 100%;
+  background: #f8fbff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(79,140,255,0.07);
+}
+.card-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 1.2em;
+}
+</style>
+{% endblock %}

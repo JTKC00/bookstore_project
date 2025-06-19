@@ -1,47 +1,123 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<div class="container my-4">
-    <h1 class="mb-4">熱門書籍</h1>
+<div class="hots-bg py-4">
+  <div class="container">
+    <h1 class="mb-5 text-center" style="font-weight:bold; letter-spacing:2px;">
+      <span style="font-size:2.2rem;">🔥 熱門書籍</span>
+    </h1>
     <div class="row">
-        <!-- 左邊分類欄 -->
-        <div class="col-md-3">
-            <div class="list-group">
-                {% for key, name in categories %}
-                <a href="?category={{ key }}"
-                   class="list-group-item list-group-item-action {% if selected_category == key %}active{% endif %}">
-                   {{ name }}
-                </a>
-                {% endfor %}
-            </div>
+      <!-- 左邊分類欄 -->
+      <div class="col-md-3 mb-4">
+        <div class="list-group shadow-sm rounded-3 hots-category-list">
+          {% for key, name in categories %}
+          <a href="?category={{ key }}"
+             class="list-group-item list-group-item-action hots-category-main {% if selected_category == key %}active{% endif %}">
+             <span style="font-size:1.1em;">{{ name }}</span>
+          </a>
+          {% endfor %}
         </div>
-        <!-- 右邊內容欄 -->
-        <div class="col-md-9">
-            <h2>{{ category_name }}</h2>
-            <div class="row">
-                {% for book in books %}
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
-                    <div class="card">
-                        <a href="{% url 'books:book' book.id %}">
-                            {% if book.photo_large %}
-                                <img src="{{ book.photo_large.url }}" class="card-img-top" alt="{{ book.title }}">
-                            {% else %}
-                                <img src="{% static 'img/default_cover.jpg' %}" class="card-img-top" alt="無封面">
-                            {% endif %}
-                        </a>
-                        <div class="card-body">
-                            <h5 class="card-title">{{ book.title }}</h5>
-                            <p class="card-text">作者：{{ book.author }}</p>
-                        </div>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="col-12">
-                    <div class="alert alert-info">暫無書籍。</div>
-                </div>
-                {% endfor %}
+      </div>
+      <!-- 右邊內容欄 -->
+      <div class="col-md-9">
+        <h2 class="mb-4" style="font-weight:bold; color:#e65100;">{{ category_name }}</h2>
+        <div class="row">
+          {% for book in books %}
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 px-2">
+            <div class="card hots-book-card h-100 shadow-sm">
+              <div class="card-header text-center bg-white border-0 p-2">
+                <h5 class="card-title mb-2" style="font-size:1.1rem; min-height:2.5em; font-weight:bold;">
+                  <a href="{% url 'books:book' book.id %}" class="hots-book-link">{{ book.title }}</a>
+                </h5>
+              </div>
+              <a href="{% url 'books:book' book.id %}">
+                {% if book.photo_large %}
+                  <img src="{{ book.photo_large.url }}" class="card-img-top mb-2" alt="{{ book.title }}">
+                {% else %}
+                  <img src="{% static 'img/default_cover.jpg' %}" class="card-img-top mb-2" alt="無封面">
+                {% endif %}
+              </a>
+              <div class="card-body text-center">
+                <p class="card-text mb-1" style="font-size:0.98em;">作者：{{ book.author }}</p>
+                <p class="card-text mb-1" style="font-size:1.05em;">
+                  價格：<span class="text-success" style="font-weight:bold;">${{ book.price }}</span>
+                </p>
+                <p class="card-text mb-1" style="font-size:0.93em;">ISBN：{{ book.isbn }}</p>
+              </div>
             </div>
+          </div>
+          {% empty %}
+          <div class="col-12">
+            <div class="alert alert-info">暫無書籍。</div>
+          </div>
+          {% endfor %}
         </div>
+      </div>
     </div>
+  </div>
 </div>
+
+<style>
+.hots-bg {
+  background: linear-gradient(120deg, #f8fbff 0%, #fff9f3 100%);
+  min-height: 100vh;
+}
+.hots-category-list {
+  border-radius: 18px;
+  overflow: hidden;
+}
+.hots-category-main {
+  font-weight: bold;
+  font-size: 1.08rem;
+  transition: background 0.2s, color 0.2s;
+}
+.hots-category-main:hover, .hots-category-main:focus, .hots-category-main.active {
+  background: #ff9800 !important;
+  color: #fff !important;
+}
+.hots-book-card {
+  border-radius: 18px;
+  border: none;
+  transition: box-shadow 0.2s, transform 0.2s;
+  background: #fff;
+}
+.hots-book-card:hover {
+  box-shadow: 0 8px 32px rgba(255,152,0,0.13);
+  transform: translateY(-4px) scale(1.03);
+}
+.card-title {
+  font-size: 1.1rem;
+  min-height: 2.5em;
+  text-align: center;
+}
+.hots-book-link {
+  color: #e65100;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.hots-book-link:hover {
+  color: #ff9800;
+  text-decoration: underline;
+}
+.card-img-top {
+  max-height: 200px;
+  min-height: 200px;
+  object-fit: contain;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  width: auto;
+  max-width: 100%;
+  background: #f8fbff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(255,152,0,0.07);
+}
+.card-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 1.2em;
+}
+</style>
 {% endblock %}

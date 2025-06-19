@@ -1,63 +1,148 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-<div class="container my-4">
-    <h1 class="mb-4">搜尋書籍</h1>
-    <form method="get" action="{% url 'books:search' %}" class="mb-4">
-        <div class="form-row">
-            <div class="col-md-4 mb-2">
-                <input type="text" name="q" class="form-control" placeholder="輸入書名或作者" value="{{ request.GET.q }}">
-            </div>
-            <div class="col-md-3 mb-2">
-                <select name="category" class="form-control">
-                    <option value="">全部分類</option>
-                    <option value="literature" {% if request.GET.category == "literature" %}selected{% endif %}>文學</option>
-                    <option value="social" {% if request.GET.category == "social" %}selected{% endif %}>社會科學</option>
-                    <option value="business" {% if request.GET.category == "business" %}selected{% endif %}>商業財經</option>
-                    <option value="food" {% if request.GET.category == "food" %}selected{% endif %}>飲食文化</option>
-                    <option value="inspiration" {% if request.GET.category == "inspiration" %}selected{% endif %}>心理勵志</option>
-                    <option value="other" {% if request.GET.category == "other" %}selected{% endif %}>其他</option>
-                </select>
-            </div>
-            <div class="col-md-3 mb-2">
-                <select name="price" class="form-control">
-                    <option value="">全部價錢</option>
-                    <option value="0-100"{% if request.GET.price == "0-100" %}selected{% endif %}>$0 - $100</option>
-                    <option value="101-200"{% if request.GET.price == "101-200" %}selected{% endif %}>$101 - $200</option>
-                    <option value="201-500"{% if request.GET.price == "201-500" %}selected{% endif %}>$201 - $500</option>
-                    <option value="501-" {% if request.GET.price == "501-" %}selected{% endif %}>$501 以上</option>
-                </select>
-            </div>
-            <div class="col-md-2 mb-2">
-                <button type="submit" class="btn btn-primary btn-block">搜尋</button>
-            </div>
+<div class="search-bg py-4">
+  <div class="container">
+    <h1 class="mb-4 text-center" style="font-weight:bold; letter-spacing:2px;">
+      <span style="font-size:2.2rem;">🔍 搜尋書籍</span>
+    </h1>
+    <form method="get" action="{% url 'books:search' %}" class="mb-5 px-4 py-4 search-form shadow-sm rounded-3">
+      <div class="form-row row">
+        <div class="col-md-4 mb-2">
+          <input type="text" name="q" class="form-control" placeholder="輸入書名或作者" value="{{ request.GET.q }}">
         </div>
+        <div class="col-md-3 mb-2">
+          <select name="category" class="form-control">
+            <option value="">全部分類</option>
+            <option value="文學" {% if request.GET.category == "文學" %}selected{% endif %}>文學</option>
+            <option value="社會科學" {% if request.GET.category == "社會科學" %}selected{% endif %}>社會科學</option>
+            <option value="商業財經" {% if request.GET.category == "商業財經" %}selected{% endif %}>商業財經</option>
+            <option value="飲食文化" {% if request.GET.category == "飲食文化" %}selected{% endif %}>飲食文化</option>
+            <option value="心理勵志" {% if request.GET.category == "心理勵志" %}selected{% endif %}>心理勵志</option>
+            <option value="其他" {% if request.GET.category == "其他" %}selected{% endif %}>其他</option>
+          </select>
+        </div>
+        <div class="col-md-3 mb-2">
+          <select name="price" class="form-control">
+            <option value="">全部價錢</option>
+            <option value="0-100"{% if request.GET.price == "0-100" %}selected{% endif %}>$0 - $100</option>
+            <option value="101-200"{% if request.GET.price == "101-200" %}selected{% endif %}>$101 - $200</option>
+            <option value="201-500"{% if request.GET.price == "201-500" %}selected{% endif %}>$201 - $500</option>
+            <option value="501-" {% if request.GET.price == "501-" %}selected{% endif %}>$501 以上</option>
+          </select>
+        </div>
+        <div class="col-md-2 mb-2 text-center">
+          <button type="submit" class="btn btn-search btn-block w-100">
+            <span style="font-size:1.2em;vertical-align:-2px;">🔍</span> 搜尋
+          </button>
+        </div>
+      </div>
     </form>
-    <h2 class="mb-4">搜尋結果</h2>
+    <h2 class="mb-4 text-primary" style="font-weight:bold;">搜尋結果</h2>
     <div class="row">
-        <!-- 搜尋結果顯示區域 -->
-        {% if books %}
-        {% for book in books %}
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
-            <div class="card">
-                <a href="{% url 'books:book' book.id %}">
-                    {% if book.photo_large %}
-                    <img src="{{ book.photo_large.url }}" class="card-img-top" alt="{{ book.title }}">
-                    {% else %}
-                    <img src="{% static 'img/default_cover.jpg' %}" class="card-img-top" alt="無封面">
-                    {% endif %}
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title">{{ book.title }}</h5>
-                    <p class="card-text">作者：{{ book.author }}</p>
-                </div>  
-            </div>
+      {% if books %}
+      {% for book in books %}
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 px-2">
+        <div class="card search-book-card h-100 shadow-sm">
+          <div class="card-header text-center bg-white border-0 p-2">
+            <h5 class="card-title mb-2" style="font-size:1.1rem; min-height:2.5em; font-weight:bold;">
+              <a href="{% url 'books:book' book.id %}" class="search-book-link">{{ book.title }}</a>
+            </h5>
+          </div>
+          <a href="{% url 'books:book' book.id %}">
+            {% if book.photo_large %}
+            <img src="{{ book.photo_large.url }}" class="card-img-top mb-2" alt="{{ book.title }}">
+            {% else %}
+            <img src="{% static 'img/default_cover.jpg' %}" class="card-img-top mb-2" alt="無封面">
+            {% endif %}
+          </a>
+          <div class="card-body text-center">
+            <p class="card-text mb-1" style="font-size:0.98em;">作者：{{ book.author }}</p>
+            <p class="card-text mb-1" style="font-size:1.05em;">
+              價格：<span class="text-success" style="font-weight:bold;">${{ book.price }}</span>
+            </p>
+            <p class="card-text mb-1" style="font-size:0.93em;">ISBN：{{ book.isbn }}</p>
+          </div>
         </div>
-        {% empty %}
-        <div class="col-12">
-            <div class="alert alert-info">沒有找到相關書籍。</div>
-        {% endfor %}
-        {% endif %}
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info">沒有找到相關書籍。</div>
+      </div>
+      {% endfor %}
+      {% endif %}
     </div>
+  </div>
 </div>
+<style>
+.search-bg {
+  background: linear-gradient(120deg, #f8fbff 0%, #f6fff8 100%);
+  min-height: 100vh;
+}
+.search-form {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(79,140,255,0.08);
+}
+.btn-search {
+  background: linear-gradient(90deg, #4f8cff, #38c6ff);
+  border: none;
+  border-radius: 30px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 16px rgba(79,140,255,0.10);
+  transition: background 0.3s, transform 0.2s;
+}
+.btn-search:hover {
+  background: linear-gradient(90deg, #38c6ff, #4f8cff);
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+}
+.search-book-card {
+  border-radius: 18px;
+  border: none;
+  transition: box-shadow 0.2s, transform 0.2s;
+  background: #fff;
+}
+.search-book-card:hover {
+  box-shadow: 0 8px 32px rgba(79,140,255,0.15);
+  transform: translateY(-4px) scale(1.03);
+}
+.card-title {
+  font-size: 1.1rem;
+  min-height: 2.5em;
+  text-align: center;
+}
+.search-book-link {
+  color: #1a237e;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.search-book-link:hover {
+  color: #38c6ff;
+  text-decoration: underline;
+}
+.card-img-top {
+  max-height: 200px;
+  min-height: 200px;
+  object-fit: contain;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  width: auto;
+  max-width: 100%;
+  background: #f8fbff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(79,140,255,0.07);
+}
+.card-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 1.2em;
+}
+</style>
 {% endblock %}
