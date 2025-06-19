@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>購物車</title>
+</head>
+    <div class="container">
+        
+<table class="table align-middle">
+  <thead>
+    <tr>
+      <th style="width: 30px; text-align: center; vertical-align: middle; white-space: nowrap;">選取</th>
+      <th style="width: 150px; text-align: center;">商品</th>
+      <th style="min-width: 220px;">商品簡介</th>
+      <th style="width: 160px; text-align: center;">數量</th>
+      <th style="width: 120px; text-align: center;">價錢</th>
+      <th style="width: 60px;">刪除</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <!-- Checkbox -->
+      <td class="align-middle text-center" style="width: 30px;">
+        <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+          <input type="checkbox" class="form-check-input m-0" />
+        </div>
+      </td>
+      <!-- Product Photo -->
+        <td class="align-middle text-center">
+            <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+                <a href="book_list/1/9789620455421_large.jpg" data-lightbox="home-images">
+                  <img src="book_list/1/9789620455421_small.jpg.webp" class="img-thumbnail" alt="Product 1" style="max-width: 150px;">
+                </a>
+            </div>
+        </td>
+      <!-- Product Details -->
+      <td class="align-middle">
+        <strong>3x3 EYES鬼籍之闇的契約者. 8</strong>
+        <p class="mb-0 text-muted small">高田裕三. 朱目彤
+          <br>玉皇朝(國際)有限公司
+          <br>漫畫
+          <br>19 厘米 無頁碼  全插圖
+          </p>
+      </td>
+      <!-- Quantity Controls -->
+      <td class="align-middle text-center">
+        <div class="input-group justify-content-center">
+          <button class="btn btn-outline-secondary btn-sm" type="button">-</button>
+          <input type="text" class="form-control text-center" value="1" style="max-width: 40px;">
+          <button class="btn btn-outline-secondary btn-sm" type="button">+</button>
+        </div>
+      </td>
+      <!-- Price -->
+      <td class="align-middle text-center">
+        $19.99
+      </td>
+      <!-- Delete Button -->
+      <td class="align-middle text-center">
+        <button class="btn btn-danger btn-sm">
+          <i class="bi bi-trash ">刪除</i>
+        </button>
+      </td>
+    </tr>
+    <tr>
+      <td class="align-middle text-center" style="width: 30px;">
+        <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+          <input type="checkbox" class="form-check-input m-0" />
+        </div>
+      </td>
+      <td class="align-middle text-center">
+            <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+                <a href="book_list/1/9789620455452_large.jpg" data-lightbox="home-images">
+                  <img src="book_list/1/9789620455452_small.jpg.webp" class="img-thumbnail" alt="Product 2" style="max-width: 150px;">
+                </a>
+                </div>
+        </td>
+      <td class="align-middle">
+        <strong>一分鐘現代藝術辭典. 1820-1989</strong>
+        <p class="mb-0 text-muted small">李仕泉 劉亮
+          <br>香港高色調出版有限公司
+          <br>17 厘米 645 頁  插圖
+          <br>藝術</p>
+      </td>
+      <td class="align-middle text-center">
+        <div class="input-group justify-content-center">
+          <button class="btn btn-outline-secondary btn-sm" type="button">-</button>
+          <input type="text" class="form-control text-center" value="2" style="max-width: 40px;">
+          <button class="btn btn-outline-secondary btn-sm" type="button">+</button>
+        </div>
+      </td>
+      <td class="align-middle text-center">
+        $39.98
+      </td>
+      <td class="align-middle text-center">
+        <button class="btn btn-danger btn-sm">
+          <i class="bi bi-trash">刪除</i>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="3"></td>
+      <td class="text-left align-center fw-bold">總數量：<span id="total-qty">3</span></td>
+      <td colspan="2" class="text-left align-center fw-bold"><span id="total-amount" unfold>總金額：$59.97</span></td>
+      <!--td class="text-center align-middle"-->
+        
+      </!--td>
+    </tr>
+  </tfoot>
+</table>    
+<br>
+<br>
+<div class="container" align="center">
+  <button class="btn btn-primary px-4" id="next-btn">下一步</button>
+</div>
+<br>
+<br>
+    愉快購物...
+        <div class ="progress">
+            <div class="progress-bar bg-secondary progress-bar-striped progress-bar-animated" style="width:25%">25%</div>
+        </div>        
+
+    </div>
+{% endblock %}    
