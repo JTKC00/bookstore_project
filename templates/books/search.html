@@ -1,1 +1,77 @@
-<h1>Search</h1>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="search-bg py-4">
+  <div class="container">
+    <h1 class="mb-4 text-center" style="font-weight:bold; letter-spacing:2px;">
+      <span style="font-size:2.2rem;">🔍 搜尋書籍</span>
+    </h1>
+    <form method="get" action="{% url 'books:search' %}" class="mb-5 px-4 py-4 search-form shadow-sm rounded-3">
+      <div class="form-row row">
+        <div class="col-md-4 mb-2">
+          <input type="text" name="q" class="form-control" placeholder="輸入書名或作者" value="{{ request.GET.q }}">
+        </div>
+        <div class="col-md-3 mb-2">
+          <select name="category" class="form-control">
+            <option value="">全部分類</option>
+            <option value="文學" {% if request.GET.category == "文學" %}selected{% endif %}>文學</option>
+            <option value="社會科學" {% if request.GET.category == "社會科學" %}selected{% endif %}>社會科學</option>
+            <option value="商業財經" {% if request.GET.category == "商業財經" %}selected{% endif %}>商業財經</option>
+            <option value="飲食文化" {% if request.GET.category == "飲食文化" %}selected{% endif %}>飲食文化</option>
+            <option value="心理勵志" {% if request.GET.category == "心理勵志" %}selected{% endif %}>心理勵志</option>
+            <option value="其他" {% if request.GET.category == "其他" %}selected{% endif %}>其他</option>
+          </select>
+        </div>
+        <div class="col-md-3 mb-2">
+          <select name="price" class="form-control">
+            <option value="">全部價錢</option>
+            <option value="0-100"{% if request.GET.price == "0-100" %}selected{% endif %}>$0 - $100</option>
+            <option value="101-200"{% if request.GET.price == "101-200" %}selected{% endif %}>$101 - $200</option>
+            <option value="201-500"{% if request.GET.price == "201-500" %}selected{% endif %}>$201 - $500</option>
+            <option value="501-" {% if request.GET.price == "501-" %}selected{% endif %}>$501 以上</option>
+          </select>
+        </div>
+        <div class="col-md-2 mb-2 text-center">
+          <button type="submit" class="btn btn-search btn-block w-100">
+            <span style="font-size:1.2em;vertical-align:-2px;">🔍</span> 搜尋
+          </button>
+        </div>
+      </div>
+    </form>
+    <h2 class="mb-4 text-primary" style="font-weight:bold;">搜尋結果</h2>
+    <div class="row">
+      {% if books %}
+      {% for book in books %}
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 px-2">
+        <div class="card search-book-card h-100 shadow-sm">
+          <div class="card-header text-center bg-white border-0 p-2">
+            <h5 class="card-title mb-2" style="font-size:1.1rem; min-height:2.5em; font-weight:bold;">
+              <a href="{% url 'books:book' book.id %}" class="search-book-link">{{ book.title }}</a>
+            </h5>
+          </div>
+          <a href="{% url 'books:book' book.id %}">
+            {% if book.photo_large %}
+            <img src="{{ book.photo_large.url }}" class="card-img-top mb-2" alt="{{ book.title }}">
+            {% else %}
+            <img src="{% static 'img/default_cover.jpg' %}" class="card-img-top mb-2" alt="無封面">
+            {% endif %}
+          </a>
+          <div class="card-body text-center">
+            <p class="card-text mb-1" style="font-size:0.98em;">作者：{{ book.author }}</p>
+            <p class="card-text mb-1" style="font-size:1.05em;">
+              價格：<span class="text-success" style="font-weight:bold;">${{ book.price }}</span>
+            </p>
+            <p class="card-text mb-1" style="font-size:0.93em;">ISBN：{{ book.isbn }}</p>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info">沒有找到相關書籍。</div>
+      </div>
+      {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

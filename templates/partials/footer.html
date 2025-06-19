@@ -1,4 +1,54 @@
-    <footer id="main-footer" class="py-4 bg-primary text-white text-center">
-      Copyright &copy;
-      <span class="year"></span> Happy Bookstore
-    </footer>
+{% load static %}
+<footer id="main-footer" class="py-5 bg-light text-dark mt-5">
+  <div class="container">
+    <div class="row text-center text-md-left">
+      <!-- 左邊空白 block -->
+      <div class="col-md-1 d-none d-md-block"></div>
+      <!-- 書店名 -->
+      <div class="col-md-2 mb-4 mb-md-0 d-flex flex-column align-items-center align-items-md-start">
+        <img src="{% static 'img/happybs_logo.png' %}" alt="Logo" style="height:80px; width:auto;">
+        <div class="ml-2 mt-2 font-weight-bold">開心書店</div>
+      </div>
+      <!-- 聯絡我們 -->
+      <div class="col-md-3 mb-4 mb-md-0">
+        <div class="font-weight-bold mb-2">聯絡我們</div>
+        <div>電話：1234 5678</div>
+        <div>WhatsApp：9123 4567</div>
+        <div>Email：happybook@example.com</div>
+      </div>
+      <!-- 瀏覽更多 -->
+      <div class="col-md-3 mb-4 mb-md-0">
+        <div class="font-weight-bold mb-2">瀏覽更多</div>
+        <div><a href="/about" class="text-dark">關於我們</a></div>
+        <div><a href="/contact" class="text-dark">聯繫我們</a></div>
+        <div><a href="/privacy" class="text-dark">私隱政策</a></div>
+      </div>
+      <!-- 社交媒體 -->
+      <div class="col-md-3">
+        <div class="font-weight-bold mb-2">社交媒體</div>
+        <div><a href="https://facebook.com" target="_blank" class="text-dark"><i class="fab fa-facebook"></i> Facebook</a></div>
+        <div><a href="https://instagram.com" target="_blank" class="text-dark"><i class="fab fa-instagram"></i> Instagram</a></div>
+      </div>
+    </div>
+    <hr class="my-4">
+    <!-- 回到頂部按鈕 -->
+    <div class="text-center mb-3">
+      <button id="back-to-top" class="btn btn-backtotop" title="回到頂部">
+        <span style="font-size:1.2em;">⬆️</span> 回到頂部
+      </button>
+    </div>
+    <div class="text-center small text-muted">
+      Copyright &copy; <span class="year">{{ now|date:"Y" }}</span> Happy Bookstore
+    </div>
+  </div>
+</footer>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const btn = document.getElementById("back-to-top");
+  btn.addEventListener("click", function() {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  });
+});
+</script>

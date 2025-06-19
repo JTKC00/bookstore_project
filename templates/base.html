@@ -13,27 +13,29 @@
     <!-- Custom -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
     <!-- lightbox -->
-    <link rel="stylesheet" href="{% static 'css/lightbox.min.css' %}"/>  
+    <link rel="stylesheet" href="{% static 'css/lightbox.min.css' %}"/> 
+    <!-- custom -->
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 </head>
     <title>{% block title %}開心書店{% endblock %}</title>
 
 <body>
-<div class="container">
-{% include "partials/topbar.html" %}
-</div>
-<div class="container">
-{% include "partials/navbar.html" %}
-</div>
-<div class="container">
-{% block content %}<!-- 其他頁面內容會插入呢度 -->{% endblock %}
-</div>
-<div class="container">
-{% include "partials/footer.html" %}
-</div>
+  <div class="container">
+    {% include "partials/topbar.html" %}
+  </div>
+  <div class="container">
+    {% include "partials/navbar.html" %}
+  </div>
+  <div class="container">
+    {% block content %}<!-- 其他頁面內容會插入呢度 -->{% endblock %}
+  </div>
+  <div class="container">
+    {% include "partials/footer.html" %}
+  </div>
 
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script> 
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script> 
-    <script src="{% static 'js/main.js' %}"></script> 
-    <script src="{% static 'js/lightbox.min.js' %}"></script>
+  <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script> 
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script> 
+  <script src="{% static 'js/main.js' %}"></script> 
+  <script src="{% static 'js/lightbox.min.js' %}"></script>
 </body>
 </html>

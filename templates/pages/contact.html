@@ -1,5 +1,50 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>聯繫我們</h1>
-<p>如果您對我們的服務有任何疑問或建議，請隨時與我們聯繫。</p>
+<div class="contact-bg py-5">
+  <div class="container">
+    <h1 class="mb-5 text-center" style="font-weight:bold; letter-spacing:2px;">
+      <span style="font-size:2.5rem;">✉️ 聯絡我們</span>
+    </h1>
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+        <div class="card shadow-lg contact-card mb-5">
+          <div class="card-body">
+            <h4 class="card-title mb-4 text-primary" style="font-weight:bold;">
+              我們樂意聆聽您的聲音
+            </h4>
+            <p class="mb-4" style="font-size:1.1rem;">
+              如果您對我們的服務有任何疑問或建議，請隨時與我們聯繫，我們會盡快回覆您！
+            </p>
+            <ul class="contact-list list-unstyled mb-0">
+              <li class="mb-3">
+                <span style="font-size:1.3em;vertical-align:-2px;">📧</span>
+                <strong>Email：</strong> happybook@example.com
+              </li>
+              <li class="mb-3">
+                <span style="font-size:1.3em;vertical-align:-2px;">📞</span>
+                <strong>電話：</strong> 1234 5678
+              </li>
+              <li class="mb-3">
+                <span style="font-size:1.3em;vertical-align:-2px;">💬</span>
+                <strong>WhatsApp：</strong> 9123 4567
+              </li>
+              <li>
+                <span style="font-size:1.3em;vertical-align:-2px;">🌐</span>
+                <strong>Facebook / Instagram：</strong> @happybookstore
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="text-center">
+          <a href="{% url 'pages:about' %}" class="btn btn-contact btn-lg">
+            <span style="font-size:1.2em;vertical-align:-2px;">📚</span> 關於我們
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 {% endblock %}
+
