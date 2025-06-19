@@ -26,20 +26,19 @@ def auto_import_photos_all(modeladmin, request, queryset):
         ]
         found_large = False # 標記是否找到大圖
         for root, dirs, files in os.walk(settings.MEDIA_ROOT): 
-            # 遞迴搜尋 media 目錄
             for fname in files:
-                # 檢查檔名是否符合大圖的可能格式
                 if fname in possible_large or fname.startswith(f"{book.isbn}_large"):
-                    # 如果找到符合的檔名，則儲存大圖，拼接完整路徑
                     photo_path = os.path.join(root, fname)
+                    # 先刪除舊有相片
+                    if book.photo_large:
+                        book.photo_large.delete(save=False)
                     with open(photo_path, 'rb') as f:
                         book.photo_large.save(fname, File(f), save=True)
                         matched_large += 1
                         found_large = True
                         break
-                    # 如果已經找到大圖，則跳出內層迴圈
-            if found_large:
-                break
+        if found_large:
+            break
         # 如果沒有找到大圖，則不處理小圖
 
         # 配對小圖（支援 .jpg、.JPG、.jpg.webp、.JPG.webp）
@@ -57,13 +56,16 @@ def auto_import_photos_all(modeladmin, request, queryset):
                     or fname.startswith(f"{book.isbn}_small")
                 ):
                     photo_path = os.path.join(root, fname)
+                    # 先刪除舊有相片
+                    if book.photo_small:
+                        book.photo_small.delete(save=False)
                     with open(photo_path, 'rb') as f:
                         book.photo_small.save(fname, File(f), save=True)
                         matched_small += 1
                         found_small = True
                         break
-            if found_small:
-                break
+        if found_small:
+            break
     # 在管理後台顯示配對結果
 
     modeladmin.message_user(

@@ -12,8 +12,8 @@
         <div class="list-group shadow-sm rounded-3 hots-category-list">
           {% for key, name in categories %}
           <a href="?category={{ key }}"
-             class="list-group-item list-group-item-action hots-category-main {% if selected_category == key %}active{% endif %}">
-             <span style="font-size:1.1em;">{{ name }}</span>
+            class="list-group-item list-group-item-action hots-category-main {% if selected_category == key %}active{% endif %}">
+            <span style="font-size:1.1em;">{{ name }}</span>
           </a>
           {% endfor %}
         </div>
@@ -57,4 +57,26 @@
   </div>
 </div>
 
+<!-- Pagination -->
+<div class="row">
+  <div class="col-12 text-center mt-4">
+    {% if books.has_previous %}
+      <a href="?page={{ books.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}"
+         class="btn btn-secondary">上一頁</a>
+    {% endif %}
+    <span class="mx-2">第 {{ books.number }} 頁，共 {{ books.paginator.num_pages }} 頁</span>
+    {% if books.paginator.count > 0 %}
+      <span class="mx-2">總計 {{ books.paginator.count }} 本書</span>
+    {% else %}
+      <span class="mx-2">沒有書籍可顯示</span>
+    {% endif %}
+    {% if books.paginator.num_pages > 1 %}
+      <span class="mx-2">每頁顯示 {{ books.paginator.per_page }} 本書</span>
+    {% endif %}
+    {% if books.has_next %}
+      <a href="?page={{ books.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}"
+         class="btn btn-secondary">下一頁</a>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

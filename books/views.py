@@ -89,17 +89,21 @@ def hots(request):
     elif category == 'recommend':
         books = books.filter(is_recommended=True)
         category_name = '精選推薦'
-    else:
-        books = []
-        category_name = ''
+
     categories = [
         ('hots', '熱買推薦'),
         ('newbook', '新書上架'),
         ('recommend', '精選推薦'),
     ]
+
+    # 分頁處理
+    paginator = Paginator(books, 6)  # 每頁顯示 6 本書
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'books/hots.html', {
         'categories': categories,
-        'books': books,
+        'books': page_obj,
         'selected_category': category,
         'category_name': category_name,
     })
