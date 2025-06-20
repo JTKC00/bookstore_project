@@ -14,30 +14,31 @@ def categories(request):
         '心理勵志': ['自我提升', '成功學', '心靈雞湯', '其他心理勵志'],
         '其他':['其他']
     }
-    category = request.GET.get('category')
-    subcategory = request.GET.get('subcategory')
+    category = request.GET.get('category', '')
+    subcategory = request.GET.get('subcategory', '')
+    
     books = Book.objects.all()
     if category:
         try:
-            books = books.filter(category=category)
+            books = books.filter(category__iexact=category.strip())
         except ValueError:
             messages.error(request, '無效的類別。')
     if subcategory:
         try:
-            books = books.filter(subcategory=subcategory)
+            books = books.filter(subcategory__iexact=subcategory.strip())
         except ValueError:
             messages.error(request, '無效的子類別。')
 
     # 分頁處理
-    paginator = Paginator(books, 6)  # 每頁顯示 6 本書
+    paginator = Paginator(books, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'books/categories.html', {
         'categories': categories,
         'books': page_obj,
-        'selected_category': category,
-        'selected_subcategory': subcategory,
+        'category': category,  
+        'subcategory': subcategory,  
     })
 
 def book(request, book_id):
@@ -97,7 +98,7 @@ def hots(request):
     ]
 
     # 分頁處理
-    paginator = Paginator(books, 6)  # 每頁顯示 6 本書
+    paginator = Paginator(books, 12)  # 每頁顯示 12 本書
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 

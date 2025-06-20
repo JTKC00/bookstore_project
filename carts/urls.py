@@ -3,5 +3,5 @@ from . import views
 
 app_name = "carts"
 urlpatterns = [
-    path("", views.carts, name="carts"),
+    path("cart/", views.cart, name="carts"),
 ]

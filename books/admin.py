@@ -37,9 +37,8 @@ def auto_import_photos_all(modeladmin, request, queryset):
                         matched_large += 1
                         found_large = True
                         break
-        if found_large:
-            break
-        # 如果沒有找到大圖，則不處理小圖
+            if found_large:
+                break   # 只 break 內層 os.walk，不 break for book in queryset
 
         # 配對小圖（支援 .jpg、.JPG、.jpg.webp、.JPG.webp）
         possible_small = [
@@ -64,8 +63,9 @@ def auto_import_photos_all(modeladmin, request, queryset):
                         matched_small += 1
                         found_small = True
                         break
-        if found_small:
-            break
+            if found_small:
+                break   # 只 break 內層 os.walk，不 break for book in queryset
+
     # 在管理後台顯示配對結果
 
     modeladmin.message_user(
