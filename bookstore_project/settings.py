@@ -148,13 +148,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # 相片上傳路徑
 
-# SESSION_COOKIE_AGE = 1209600  # 2週，單位為秒
-# SESSION_COOKIE_SECURE = True  # 生產環境必須，開發環境可用 False，只會喺 HTTPS 安全連線下傳送 session cookies
 
 
-# def set_preference(request):
-#     if request.method == 'POST':
-#         response = redirect('books:categories')
-#         preference = request.POST.get('preference')
-#         response.set_cookie('user_preference', preference, max_age=365*24*60*60)
-#         return response

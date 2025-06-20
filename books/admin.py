@@ -5,6 +5,8 @@ from import_export.admin import ImportExportModelAdmin # 用於匯入/匯出功�
 import os # 用於遞迴搜尋檔案
 from django.conf import settings # 用於獲取 MEDIA_ROOT 路徑
 from django.core.files import File # 用於處理檔案儲存
+from PIL import Image  # 加入 PIL 庫用於檢查圖片
+import shutil  # 用於移動檔案
 
 class BookResource(resources.ModelResource):
     class Meta:
@@ -14,33 +16,71 @@ class BookResource(resources.ModelResource):
 
 def auto_import_photos_all(modeladmin, request, queryset):
     """
-    遞迴搜尋 media 內所有 jpg 及 webp，根據 ISBN 自動配對書本大圖及小圖
+    遞迴搜尋 media 內所有 jpg 及 webp，根據 ISBN 自動配對書本大圖及小圖，同時刪除損壞的圖片
     """
-    matched_large = 0 # 計算配對到的大圖數量
-    matched_small = 0 # 計算配對到的小圖數量
+    matched_large = 0
+    matched_small = 0
+    errors = 0
+    corrupt_deleted = 0
+    error_folder = os.path.join(settings.MEDIA_ROOT, 'error_images')
+    
+    # 確保錯誤圖片資料夾存在
+    if not os.path.exists(error_folder):
+        os.makedirs(error_folder)
+    
     for book in queryset:
         # 配對大圖
         possible_large = [
             f"{book.isbn}_large.jpg",
             f"{book.isbn}_large.JPG",
         ]
-        found_large = False # 標記是否找到大圖
+        found_large = False
         for root, dirs, files in os.walk(settings.MEDIA_ROOT): 
             for fname in files:
                 if fname in possible_large or fname.startswith(f"{book.isbn}_large"):
                     photo_path = os.path.join(root, fname)
-                    # 先刪除舊有相片
-                    if book.photo_large:
-                        book.photo_large.delete(save=False)
-                    with open(photo_path, 'rb') as f:
-                        book.photo_large.save(fname, File(f), save=True)
-                        matched_large += 1
-                        found_large = True
-                        break
+                    
+                    # 檢查檔案是否存在及完整
+                    if not os.path.exists(photo_path):
+                        continue
+                    
+                    # 檢查圖片是否損壞
+                    try:
+                        with Image.open(photo_path) as img:
+                            img.verify()  # 驗證圖片完整性
+                    except Exception as e:
+                        # 圖片損壞，移至錯誤資料夾或刪除
+                        error_path = os.path.join(error_folder, fname)
+                        try:
+                            shutil.move(photo_path, error_path)
+                            corrupt_deleted += 1
+                            print(f"已移動損壞圖片到錯誤資料夾: {fname}，錯誤: {str(e)}")
+                        except:
+                            try:
+                                os.remove(photo_path)
+                                corrupt_deleted += 1
+                                print(f"已刪除損壞圖片: {fname}，錯誤: {str(e)}")
+                            except:
+                                pass
+                        continue
+                    
+                    # 正常處理圖片
+                    try:
+                        if book.photo_large:
+                            book.photo_large.delete(save=False)
+                        with open(photo_path, 'rb') as f:
+                            book.photo_large.save(fname, File(f), save=True)
+                            matched_large += 1
+                            found_large = True
+                            break
+                    except Exception as e:
+                        errors += 1
+                        print(f"錯誤處理圖片 {photo_path}: {str(e)}")
+                        continue
             if found_large:
-                break   # 只 break 內層 os.walk，不 break for book in queryset
+                break
 
-        # 配對小圖（支援 .jpg、.JPG、.jpg.webp、.JPG.webp）
+        # 配對小圖（類似邏輯，但加入了圖片驗證）
         possible_small = [
             f"{book.isbn}_small.jpg",
             f"{book.isbn}_small.JPG",
@@ -50,27 +90,55 @@ def auto_import_photos_all(modeladmin, request, queryset):
         found_small = False
         for root, dirs, files in os.walk(settings.MEDIA_ROOT):
             for fname in files:
-                if (
-                    fname in possible_small
-                    or fname.startswith(f"{book.isbn}_small")
-                ):
+                if fname in possible_small or fname.startswith(f"{book.isbn}_small"):
                     photo_path = os.path.join(root, fname)
-                    # 先刪除舊有相片
-                    if book.photo_small:
-                        book.photo_small.delete(save=False)
-                    with open(photo_path, 'rb') as f:
-                        book.photo_small.save(fname, File(f), save=True)
-                        matched_small += 1
-                        found_small = True
-                        break
+                    
+                    # 檢查檔案是否存在及完整
+                    if not os.path.exists(photo_path):
+                        continue
+                    
+                    # 檢查圖片是否損壞
+                    try:
+                        # 對於 JPG/JPEG 檔案
+                        if photo_path.lower().endswith(('.jpg', '.jpeg')):
+                            with Image.open(photo_path) as img:
+                                img.verify()
+                    except Exception as e:
+                        # 圖片損壞，移至錯誤資料夾或刪除
+                        error_path = os.path.join(error_folder, fname)
+                        try:
+                            shutil.move(photo_path, error_path)
+                            corrupt_deleted += 1
+                            print(f"已移動損壞圖片到錯誤資料夾: {fname}，錯誤: {str(e)}")
+                        except:
+                            try:
+                                os.remove(photo_path)
+                                corrupt_deleted += 1
+                                print(f"已刪除損壞圖片: {fname}，錯誤: {str(e)}")
+                            except:
+                                pass
+                        continue
+                    
+                    # 正常處理圖片
+                    try:
+                        if book.photo_small:
+                            book.photo_small.delete(save=False)
+                        with open(photo_path, 'rb') as f:
+                            book.photo_small.save(fname, File(f), save=True)
+                            matched_small += 1
+                            found_small = True
+                            break
+                    except Exception as e:
+                        errors += 1
+                        print(f"錯誤處理圖片 {photo_path}: {str(e)}")
+                        continue
             if found_small:
-                break   # 只 break 內層 os.walk，不 break for book in queryset
-
-    # 在管理後台顯示配對結果
+                break
 
     modeladmin.message_user(
         request,
         f"已自動配對 {matched_large} 本書的大圖及 {matched_small} 本書的小圖。"
+        f"處理過程中有 {errors} 個錯誤，刪除/移動了 {corrupt_deleted} 張損壞圖片。"
     )
 auto_import_photos_all.short_description = "自動根據ISBN遞迴匯入大圖及小圖"
 
