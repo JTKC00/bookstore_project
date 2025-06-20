@@ -1,16 +1,17 @@
 from django.db import models
 from datetime import datetime
+from django.contrib.auth.models import User
+from books.models import Book
 
 # Create your models here.
 class ShopCart(models.Model):
     datetime = models.DateTimeField(default=datetime.now, blank=True)
-    user_id = models.IntegerField(blank=True)
+    userId = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True)
     
 
 class CartItem(models.Model):
-    bookId = models.CharField(max_length=100)
-    shopCartId = models.CharField(max_length=100, unique=True)
+    bookId = models.ForeignKey(Book, on_delete=models.DO_NOTHING)
+    shopCartId = models.ForeignKey(ShopCart, on_delete=models.DO_NOTHING)
     quantity = models.IntegerField()
-    sub_total = models.DecimalField(max_digits=2, decimal_places=1)
-    unit_price = models.DecimalField(max_digits=2, decimal_places=1)
-    photo_1 = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
+    sub_total = models.DecimalField(max_digits=10, decimal_places=2)
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
