@@ -6,6 +6,17 @@
     <title>購物車</title>
 </head>
     <div class="container">
+      {% if cart_items %}
+        {% for item in cart_items %}
+          <div class="card mb-3">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <img src="{{ item.photo_1.url }}" class="img-fluid rounded-start" />
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">{{ item.bookId }} xxx</h5>
+                  <br />
         
 <table class="table align-middle">
   <thead>
