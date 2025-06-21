@@ -1,0 +1,515 @@
+/* ====== 書籍頁 book.html ====== */
+.book-bg {
+  background: linear-gradient(120deg, #f8fbff 0%, #f6fff8 100%);
+  min-height: 100vh;
+}
+.book-bg .book-cover-lg {
+  max-height: 340px;
+  min-height: 220px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+.book-bg .book-cover-sm {
+  max-height: 90px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #f8fbff;
+}
+.book-bg .book-title {
+  font-weight: bold;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+.book-bg .book-info-list li {
+  margin-bottom: 0.5em;
+  font-size: 1.08rem;
+}
+.book-bg .book-intro {
+  background: #f8fbff;
+  border-radius: 10px;
+  padding: 1em;
+  font-size: 1.05rem;
+  color: #333;
+}
+.book-bg .btn-contact {
+  background: linear-gradient(90deg, #4f8cff, #38c6ff);
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 4px 16px rgba(79,140,255,0.15);
+  color: #fff;
+  padding: 0.75rem 2.5rem;
+  font-size: 1.2rem;
+  transition: background 0.3s, transform 0.2s;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.book-bg .btn-contact:hover {
+  background: linear-gradient(90deg, #38c6ff, #4f8cff);
+  color: #fff;
+  transform: translateY(-3px) scale(1.05);
+  text-decoration: none;
+}
+
+
+/* ====== 書籍分類頁 categories.html ====== */
+.category-bg {
+  background: linear-gradient(120deg, #f8fbff 0%, #f6fff8 100%);
+  min-height: 100vh;
+}
+.category-bg .category-list {
+  border-radius: 18px;
+  overflow: hidden;
+}
+.category-bg .category-main {
+  font-weight: bold;
+  font-size: 1.08rem;
+  transition: background 0.2s, color 0.2s;
+}
+.category-bg .category-main:hover, .category-bg .category-main:focus {
+  background: #4f8cff !important;
+  color: #fff !important;
+}
+.category-bg .category-sub {
+  padding-left: 2em;
+  font-size: 0.98rem;
+  transition: background 0.2s, color 0.2s;
+}
+.category-bg .category-sub:hover, .category-bg .category-sub:focus {
+  background: #e3f0ff !important;
+  color: #1a73e8 !important;
+}
+.category-bg .book-card {
+  border-radius: 18px;
+  border: none;
+  transition: box-shadow 0.2s, transform 0.2s;
+  background: #fff;
+}
+.category-bg .book-card:hover {
+  box-shadow: 0 8px 32px rgba(79,140,255,0.15);
+  transform: translateY(-4px) scale(1.03);
+}
+.category-bg .card-title {
+  font-size: 1.1rem;
+  min-height: 2.5em;
+  text-align: center;
+}
+.category-bg .book-link {
+  color: #1a237e;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.category-bg .book-link:hover {
+  color: #38c6ff;
+  text-decoration: underline;
+}
+.category-bg .card-img-top {
+  max-height: 200px;
+  min-height: 200px;
+  object-fit: contain;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  width: auto;
+  max-width: 100%;
+  background: #f8fbff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(79,140,255,0.07);
+}
+.category-bg .card-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 1.2em;
+}
+
+/* ====== 熱門書籍頁 hots.html ====== */
+.hots-bg {
+  background: linear-gradient(120deg, #f8fbff 0%, #fff9f3 100%);
+  min-height: 100vh;
+}
+.hots-bg .hots-category-list {
+  border-radius: 18px;
+  overflow: hidden;
+}
+.hots-bg .hots-category-main {
+  font-weight: bold;
+  font-size: 1.08rem;
+  transition: background 0.2s, color 0.2s;
+}
+.hots-bg .hots-category-main:hover, .hots-bg .hots-category-main:focus, .hots-bg .hots-category-main.active {
+  background: #ff9800 !important;
+  color: #fff !important;
+}
+.hots-bg .hots-book-card {
+  border-radius: 18px;
+  border: none;
+  transition: box-shadow 0.2s, transform 0.2s;
+  background: #fff;
+}
+.hots-bg .hots-book-card:hover {
+  box-shadow: 0 8px 32px rgba(255,152,0,0.13);
+  transform: translateY(-4px) scale(1.03);
+}
+.hots-bg .card-title {
+  font-size: 1.1rem;
+  min-height: 2.5em;
+  text-align: center;
+}
+.hots-bg .hots-book-link {
+  color: #e65100;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.hots-bg .hots-book-link:hover {
+  color: #ff9800;
+  text-decoration: underline;
+}
+.hots-bg .card-img-top {
+  max-height: 200px;
+  min-height: 200px;
+  object-fit: contain;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  width: auto;
+  max-width: 100%;
+  background: #f8fbff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(255,152,0,0.07);
+}
+.hots-bg .card-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 1.2em;
+}
+
+/* ====== 搜尋頁 search.html ====== */
+.search-bg {
+  background: linear-gradient(120deg, #f8fbff 0%, #f6fff8 100%);
+  min-height: 100vh;
+}
+.search-bg .search-form {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(79,140,255,0.08);
+}
+.search-bg .btn-search {
+  background: linear-gradient(90deg, #4f8cff, #38c6ff);
+  border: none;
+  border-radius: 30px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 16px rgba(79,140,255,0.10);
+  transition: background 0.3s, transform 0.2s;
+}
+.search-bg .btn-search:hover {
+  background: linear-gradient(90deg, #38c6ff, #4f8cff);
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+}
+.search-bg .search-book-card {
+  border-radius: 18px;
+  border: none;
+  transition: box-shadow 0.2s, transform 0.2s;
+  background: #fff;
+}
+.search-bg .search-book-card:hover {
+  box-shadow: 0 8px 32px rgba(79,140,255,0.15);
+  transform: translateY(-4px) scale(1.03);
+}
+.search-bg .card-title {
+  font-size: 1.1rem;
+  min-height: 2.5em;
+  text-align: center;
+}
+.search-bg .search-book-link {
+  color: #1a237e;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.search-bg .search-book-link:hover {
+  color: #38c6ff;
+  text-decoration: underline;
+}
+.search-bg .card-img-top {
+  max-height: 200px;
+  min-height: 200px;
+  object-fit: contain;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  width: auto;
+  max-width: 100%;
+  background: #f8fbff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(79,140,255,0.07);
+}
+.search-bg .card-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 1.2em;
+}
+
+/* ====== 關於我們頁 about.html ====== */
+.about-bg {
+  background: linear-gradient(120deg, #f8fbff 0%, #f6fff8 100%);
+  min-height: 100vh;
+}
+.about-bg .about-card {
+  border-radius: 24px;
+  border: none;
+}
+.about-bg .card-title {
+  letter-spacing: 1px;
+}
+.about-bg .about-list {
+  font-size: 1.08rem;
+  padding-left: 1.2em;
+}
+.about-bg .about-list li {
+  margin-bottom: 0.5em;
+  line-height: 1.7;
+}
+
+/* ====== 聯絡我們頁 contact.html ====== */
+.contact-bg {
+  background: linear-gradient(120deg, #f8fbff 0%, #f6fff8 100%);
+  min-height: 100vh;
+}
+.contact-bg .contact-card {
+  border-radius: 24px;
+  border: none;
+}
+.contact-bg .card-title {
+  letter-spacing: 1px;
+}
+.contact-bg .contact-list li {
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+/* ====== 首頁 frontpage.html ====== */
+.frontpage-bg .jumbotron {
+  background: linear-gradient(90deg, #4f8cff 0%, #38c6ff 100%);
+  border-radius: 0 0 40px 40px;
+}
+.frontpage-bg .carousel-wrapper {
+  padding: 1.5rem 0 1rem 0;
+}
+.frontpage-bg .carousel-img {
+  max-height: 350px;
+  min-height: 220px;
+  object-fit: contain;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  background: #fff;
+}
+.frontpage-bg .carousel-indicators {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  width: auto;
+  padding: 0;
+  margin: 0;
+}
+.frontpage-bg .carousel-indicators li {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  margin: 0 6px;
+  background-clip: padding-box;
+  vertical-align: middle;
+  border: none;
+  transition: background-color 0.3s;
+  display: inline-block;
+}
+.frontpage-bg .carousel-indicators li.active {
+  background-color: #38c6ff;
+}
+.frontpage-bg .carousel-caption {
+  background: rgba(0,0,0,0.5);
+  border-radius: 12px;
+}
+.frontpage-bg .section-title {
+  font-size: 2rem;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+.frontpage-bg .btn-contact {
+  background: linear-gradient(90deg, #4f8cff, #38c6ff);
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 4px 16px rgba(79,140,255,0.15);
+  color: #fff;
+  padding: 0.75rem 2.5rem;
+  font-size: 1.2rem;
+  transition: background 0.3s, transform 0.2s;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.frontpage-bg .btn-contact:hover {
+  background: linear-gradient(90deg, #38c6ff, #4f8cff);
+  color: #fff;
+  transform: translateY(-3px) scale(1.05);
+  text-decoration: none;
+}
+.frontpage-bg section {
+  border-radius: 24px;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+}
+.frontpage-bg .text-primary { color: #4f8cff !important; }
+.frontpage-bg .text-danger { color: #e65100 !important; }
+.frontpage-bg .text-success { color: #2e7d32 !important; }
+.frontpage-bg .text-secondary { color: #6c757d !important; }
+
+/* ====== 私隱政策頁 privacy.html ====== */
+.privacy-bg {
+  background: linear-gradient(120deg, #f8fbff 0%, #f6fff8 100%);
+  min-height: 100vh;
+}
+.privacy-bg .privacy-card {
+  border-radius: 24px;
+  border: none;
+}
+.privacy-bg .card-title {
+  letter-spacing: 1px;
+}
+.privacy-bg .privacy-list {
+  font-size: 1.08rem;
+  padding-left: 1.2em;
+}
+.privacy-bg .privacy-list li {
+  margin-bottom: 0.7em;
+  line-height: 1.7;
+}
+
+/* ====== 全站共用按鈕、footer、topbar、navbar ====== */
+.btn-contact {
+  background: linear-gradient(90deg, #4f8cff, #38c6ff);
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 4px 16px rgba(79,140,255,0.15);
+  color: #fff;
+  padding: 0.75rem 2.5rem;
+  font-size: 1.2rem;
+  transition: background 0.3s, transform 0.2s;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.btn-contact:hover {
+  background: linear-gradient(90deg, #38c6ff, #4f8cff);
+  color: #fff;
+  transform: translateY(-3px) scale(1.05);
+  text-decoration: none;
+}
+.btn-backtotop {
+  background: linear-gradient(90deg, #4f8cff, #38c6ff);
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  font-weight: bold;
+  padding: 0.5em 2em;
+  box-shadow: 0 2px 8px rgba(79,140,255,0.10);
+  transition: background 0.3s, transform 0.2s;
+  margin-bottom: 0.5em;
+}
+.btn-backtotop:hover {
+  background: linear-gradient(90deg, #38c6ff, #4f8cff);
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+}
+
+/* Footer */
+#main-footer {
+  background: linear-gradient(90deg, #f8fbff 0%, #e3f0ff 100%);
+  color: #222;
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -2px 12px rgba(79,140,255,0.08);
+}
+#main-footer a.text-dark:hover {
+  color: #38c6ff !important;
+  text-decoration: underline;
+}
+#main-footer .fab {
+  font-size: 1.2em;
+  margin-right: 0.3em;
+}
+#main-footer .year {
+  color: #38c6ff;
+  font-weight: bold;
+}
+#main-footer .font-weight-bold {
+  letter-spacing: 1px;
+}
+#main-footer .logo {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(79,140,255,0.10);
+}
+#main-footer .text-muted:after {
+  content: " ❤️";
+  color: #ff6f91;
+}
+
+/* Topbar */
+.topbar {
+  box-shadow: 0 2px 12px rgba(79,140,255,0.08);
+  border-radius: 0 0 24px 24px;
+}
+.topbar .logo img {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(79,140,255,0.10);
+}
+.topbar-right .btn-link {
+  font-weight: bold;
+  font-size: 1.08rem;
+  margin-left: 0.5em;
+  transition: color 0.2s, background 0.2s;
+  border-radius: 20px;
+  padding: 0.4em 1.2em;
+}
+.topbar-right .btn-link:hover {
+  background: #38c6ff;
+  color: #fff !important;
+  text-decoration: none;
+}
+
+/* Navbar */
+.navbar {
+  box-shadow: 0 2px 12px rgba(79,140,255,0.08);
+  border-radius: 0 0 18px 18px;
+}
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+}
+.navbar-nav .nav-link {
+  font-size: 1.08rem;
+  font-weight: 500;
+  border-radius: 18px;
+  margin-right: 0.5em;
+  transition: background 0.2s, color 0.2s;
+}
+.navbar-nav .nav-link:hover, .navbar-nav .nav-item.active .nav-link {
+  background: #4f8cff;
+  color: #fff !important;
+}
+
+/* ====== 其他全站共用 class 可繼續加落去 ====== */

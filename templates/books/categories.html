@@ -2,51 +2,96 @@
 {% load static %}
 
 {% block content %}
-<div class="container my-4">
-  <h1 class="mb-4">書籍分類</h1>
-  <div class="row">
-    <!-- 左邊分類欄 -->
-    <div class="col-md-3">
-      <div class="list-group">
-        {% for category, subcategories in categories.items %}
-        <a class="list-group-item list-group-item-action bg-light text-dark" data-toggle="collapse"
-          href="#collapse-{{ forloop.counter }}" role="button" aria-expanded="false"
-          aria-controls="collapse-{{ forloop.counter }}">{{ category }}</a>
-        <div class="collapse" id="collapse-{{ forloop.counter }}">
-          {% for sub in subcategories %}
-          <a href="?category={{ category }}&subcategory={{ sub }}"
-            class="list-group-item list-group-item-action bg-dark text-light">{{ sub }}</a>
+<div class="category-bg py-4">
+  <div class="container">
+    <h1 class="mb-5 text-center" style="font-weight:bold; letter-spacing:2px;">
+      <span style="font-size:2.2rem;">📚 書籍分類</span>
+    </h1>
+    <div class="row">
+      <!-- 左邊分類欄 -->
+      <div class="col-md-3 mb-4">
+        <div class="list-group shadow-sm rounded-3 category-list">
+          {% for category, subcategories_list in categories.items %}
+          <a class="list-group-item list-group-item-action bg-light text-dark category-main"
+            data-toggle="collapse"
+            href="#collapse-{{ forloop.counter }}" role="button" aria-expanded="false"
+            aria-controls="collapse-{{ forloop.counter }}">
+            <span style="font-size:1.1em;">{{ category }}</span>
+          </a>
+          <div class="collapse" id="collapse-{{ forloop.counter }}">
+            {% for sub in subcategories_list %}
+            <a href="?category={{ category }}&subcategory={{ sub }}"
+              class="list-group-item list-group-item-action bg-white text-primary category-sub">
+              <span style="font-size:1em;">{{ sub }}</span>
+            </a>
+            {% endfor %}
+          </div>
           {% endfor %}
         </div>
-        {% endfor %}
       </div>
-    </div>
 
-    <!-- 右邊內容欄 -->
-    <div class="col-md-9">
-      <div class="row">
-        {% for book in books %}
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title"><a href="{% url 'books:book' book.id %}">{{ book.title }}</a></h5>
-              <a href="{% url 'books:book' book.id %}">
-                <img src="{{ book.photo_large.url }}" class="card-img-top" alt="{{ book.title }}">
-              </a>
-              <p class="card-text">作者：{{ book.author }}<br>ISBN：{{ book.isbn }}</p>
+      <!-- 右邊內容欄 -->
+      <div class="col-md-9">
+        <div class="row">
+          {% for book in books %}
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 px-2">
+            <div class="card book-card h-100 shadow-sm">
+              <h5 class="card-title text-center mt-3 mb-2" style="font-weight:bold;">
+                <a href="{% url 'books:book' book.id %}" class="book-link">{{ book.title }}</a>
+              </h5>
+              <div class="card-body d-flex flex-column align-items-center">
+                <a href="{% url 'books:book' book.id %}">
+                  {% if book.photo_large %}
+                  <img src="{{ book.photo_large.url }}" class="card-img-top mb-3" alt="{{ book.title }}">
+                  {% else %}
+                  <img src="{% static 'img/default_cover.jpg' %}" class="card-img-top mb-3" alt="無封面">
+                  {% endif %}
+                </a>
+                <p class="card-text text-center mb-1" style="font-size:0.98em;">
+                  作者：{{ book.author }}
+                </p>
+                <p class="card-text text-center mb-1" style="font-size:0.98em;">
+                  價錢：<span class="text-success">${{ book.price }}</span>
+                </p>
+                <p class="card-text text-center" style="font-size:0.93em;">
+                  ISBN：{{ book.isbn }}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        {% empty %}
-        <div class="col-12">
-          <div class="alert alert-info" role="alert">
-            沒有找到相關書籍。
+          {% empty %}
+          <div class="col-12">
+            <div class="alert alert-info" role="alert">
+              沒有找到相關書籍。
+            </div>
           </div>
+          {% endfor %}
         </div>
-        {% endfor %}
       </div>
-
-
     </div>
   </div>
-  {% endblock %}
+</div>
+
+<!-- Pagination -->
+  <div class="row">
+    <div class="col-12 text-center mt-4">
+      {% if books.has_previous %}
+      <a href="?page={{ books.previous_page_number }}&category={{ category }}&subcategory={{ subcategory }}"
+        class="btn btn-secondary">上一頁</a>
+      {% endif %}
+      <span class="mx-2">第 {{ books.number }} 頁，共 {{ books.paginator.num_pages }} 頁</span>
+      {% if books.paginator.count > 0 %}
+      <span class="mx-2">總計 {{ books.paginator.count }} 本書</span>
+      {% else %}
+      <span class="mx-2">沒有書籍可顯示</span>
+      {% endif %}
+      {% if books.paginator.num_pages > 1 %}
+      <span class="mx-2">每頁顯示 {{ books.paginator.per_page }} 本書</span>
+      {% endif %}
+      {% if books.has_next %}
+      <a href="?page={{ books.next_page_number }}&category={{ category }}&subcategory={{ subcategory }}"
+        class="btn btn-secondary">下一頁</a>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
