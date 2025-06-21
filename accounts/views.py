@@ -13,10 +13,10 @@ def user_login(request):
         user = authenticate(request,username=username,password=password)
         if user is not None:
             auth.login(request,user)
-            messages.success(request, "You are now logged in !")
+            messages.success(request, "你已成功登入 !")
             return redirect("pages:frontpage")
         else:
-            messages.error(request, "Invalid credentials !")
+            messages.error(request, "登入失敗，請檢查您的用戶名和密碼 !")
             return redirect('accounts:login')
     else:
         return render(request,'accounts/login.html')
@@ -34,11 +34,11 @@ def register(request):
         reg_address = request.POST.get('address')
         if password == password2:
             if User.objects.filter(username=username).exists():
-                messages.error(request, "Username already exists !")
+                messages.error(request, "用戶名已被使用 !")
                 return redirect("accounts:register")
             else:
                 if User.objects.filter(email=email).exists():
-                    messages.error(request, "Email already used !")
+                    messages.error(request, "電郵已被使用 !")
                     return redirect("accounts:register")
                 else:
                     user = User.objects.create_user(username=username, email=email, password=password,first_name=first_name,last_name=last_name)
@@ -50,7 +50,7 @@ def register(request):
                     auth.login(request, user)
                     return redirect("accounts:register")
         else:
-            messages.error(request, "Passwords do not match")
+            messages.error(request, "密碼不匹配 !")
             return redirect("accounts:register")
     else:
         return render(request, 'accounts/register.html')
@@ -75,3 +75,8 @@ def profile_edit(request):
     })
 
     return render(request, 'accounts/profile.html')
+
+def logout(request):
+    auth.logout(request)
+    messages.success(request, "你已成功登出!")
+    return redirect("pages:frontpage")

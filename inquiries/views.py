@@ -15,7 +15,7 @@ def inquiries(request):
                 contact_message.user = request.user
                 
             contact_message.save()
-            messages.success(request, "您的查詢已成功送出，我們會盡快回覆您！")
+            uccess(request, "您的查詢已成功送出，我們會盡快回覆您！")
             return redirect('/')
     else:
         # GET 請求也傳入用戶參數

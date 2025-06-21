@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,15 +27,15 @@
     {% include "partials/navbar.html" %}
   </div>
   <div class="container">
-    <!-- 加在主內容區域的開始位置 -->
+    <!-- alert/messages 相關 -->
     {% if messages %}
-    <div class="message-container">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div id="notification-container">
+      {% for message in messages %}
+        <div class="notification-toast {{ message.tags }}" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" onclick="closeNotification(this.parentElement)">×</button>
         </div>
-        {% endfor %}
+      {% endfor %}
     </div>
     {% endif %}
 
@@ -50,7 +50,90 @@
   <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script> 
   <script src="{% static 'js/main.js' %}"></script> 
   <script src="{% static 'js/lightbox.min.js' %}"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 自動隱藏通知
+    setTimeout(function() {
+      const notifications = document.querySelectorAll('.notification-toast');
+      notifications.forEach(note => {
+        if (note) {
+          note.style.opacity = '0';
+          setTimeout(() => {
+            if (note.parentElement) {
+              note.parentElement.removeChild(note);
+            }
+          }, 500);
+        }
+      });
+    }, 4500);
+  });
+  
+  // 處理購物車點擊事件
+  function handleCartClick(event) {
+    // 檢查是否登入
+    const isAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+    
+    if (!isAuthenticated) {
+      event.preventDefault();
+      
+      // 創建未登入通知
+      const notificationContainer = document.getElementById('notification-container');
+      const notification = document.createElement('div');
+      notification.className = 'notification-toast error';
+      notification.innerHTML = '您尚未登入，請先登入以使用購物車功能。' +
+        '<button type="button" class="btn-close" onclick="closeNotification(this.parentElement)"></button>';
+      
+      notificationContainer.appendChild(notification);
+      
+      // 設置自動隱藏
+      setTimeout(() => closeNotification(notification), 5500);
+      return false;
+    }
+    return true;
+  }
+  
+  // 添加一個函數用於動態創建通知
+  function showNotification(message, isError = false) {
+    // 檢查是否已存在容器，如果不存在則創建
+    let container = document.getElementById('notification-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'notification-container';
+      document.body.prepend(container);
+    }
+    
+    // 創建通知元素
+    const notification = document.createElement('div');
+    notification.className = 'notification-toast ' + (isError ? 'error' : '');
+    notification.innerHTML = `
+      ${message}
+      <button type="button" class="btn-close" onclick="closeNotification(this.parentElement)">×</button>
+    `;
+    
+    // 添加到容器
+    container.appendChild(notification);
+    
+    // 自動移除
+    setTimeout(() => closeNotification(notification), 5000);
+  }
 
+  function closeNotification(element) {
+    if (element) {
+      element.style.opacity = '0';
+      setTimeout(() => {
+        if (element.parentElement) {
+          element.parentElement.removeChild(element);
+          
+          // 如果容器為空，也移除容器
+          const container = document.getElementById('notification-container');
+          if (container && container.children.length === 0) {
+            container.remove();
+          }
+        }
+      }, 500);
+    }
+  }
+</script>
 
 </body>
 </html>
