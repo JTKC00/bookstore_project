@@ -37,4 +37,4 @@ def inquiries(request):
         form = ContactMessageForm(user=request.user)
     
     # 添加模板路徑
-    return render(request, 'Inquiries/inquiry_form.html', {'form': form})
+    return render(request, 'inquiries/inquiry_form.html', {'form': form})
