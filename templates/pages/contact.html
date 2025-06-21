@@ -93,6 +93,7 @@
               </div>
               
               <button type="submit" class="btn btn-primary">送出查詢</button>
+              <button type="reset" class="btn btn-secondary">重設</button>
             </form>
           </div>
         </div>
@@ -106,5 +107,15 @@
     </div>
   </div>
 </div>
+
+<!-- 添加 JavaScript 防止重複提交 -->
+<script>
+document.querySelector('form').addEventListener('submit', function() {
+    // 禁用提交按鈕
+    const submitBtn = document.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '提交中...';
+});
+</script>
 {% endblock %}
 

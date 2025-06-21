@@ -535,7 +535,7 @@
   #notification-container {
     position: fixed !important;
     top: 80px !important; /* 增加頂部邊距，根據導航欄高度調整 */
-    left: 100% !important;
+    left: 50% !important;
     transform: translateX(-50%) !important;
     z-index: 99999 !important; /* 提高 z-index */
     width: auto !important;

@@ -14,7 +14,7 @@
                     </div>
                     {% endif %}
 
-                    <form method="post" novalidate>
+                    <form method="post" id="inquiry-form" novalidate>
                         {% csrf_token %}
                         
                         <!-- 處理隱藏欄位 -->
@@ -37,11 +37,21 @@
                             </div>
                         {% endfor %}
                         
-                        <button type="submit" class="btn btn-primary">送出查詢</button>
+                        <button type="submit" id="submit-btn" class="btn btn-primary">送出查詢</button>
+                        <button type="reset" class="btn btn-secondary">重設</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
+
+<!-- 添加 JavaScript 防止重複提交 -->
+<script>
+document.getElementById('inquiry-form').addEventListener('submit', function() {
+    // 禁用提交按鈕
+    document.getElementById('submit-btn').disabled = true;
+    document.getElementById('submit-btn').innerHTML = '提交中...';
+});
+</script>
+{% endblock %} 

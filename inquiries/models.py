@@ -12,7 +12,7 @@ class ContactMessage(models.Model):
     created_at = models.DateTimeField("提交時間", auto_now_add=True)
     phone = models.CharField("聯絡電話", max_length=15, blank=True, null=True)
 
-    def __str__(self):
+    def __str__(self):  
         if self.user:
             return f"{self.user.username} 的查詢"
         return f"{self.first_name} {self.last_name}  的查詢"

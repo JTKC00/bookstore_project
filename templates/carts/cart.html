@@ -1,137 +1,109 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>購物車</title>
-</head>
-    <div class="container">
-      {% if cart_items %}
-        {% for item in cart_items %}
-          <div class="card mb-3">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img src="{{ item.photo_1.url }}" class="img-fluid rounded-start" />
-              </div>
-              <div class="col-md-8">
-                <div class="card-body">
-                  <h5 class="card-title">{{ item.bookId }} xxx</h5>
-                  <br />
-        
-<table class="table align-middle">
-  <thead>
-    <tr>
-      <th style="width: 30px; text-align: center; vertical-align: middle; white-space: nowrap;">選取</th>
-      <th style="width: 150px; text-align: center;">商品</th>
-      <th style="min-width: 220px;">商品簡介</th>
-      <th style="width: 160px; text-align: center;">數量</th>
-      <th style="width: 120px; text-align: center;">價錢</th>
-      <th style="width: 60px;">刪除</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <!-- Checkbox -->
-      <td class="align-middle text-center" style="width: 30px;">
-        <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
-          <input type="checkbox" class="form-check-input m-0" />
-        </div>
-      </td>
-      <!-- Product Photo -->
-        <td class="align-middle text-center">
-            <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
-                <a href="book_list/1/9789620455421_large.jpg" data-lightbox="home-images">
-                  <img src="book_list/1/9789620455421_small.jpg.webp" class="img-thumbnail" alt="Product 1" style="max-width: 150px;">
-                </a>
-            </div>
-        </td>
-      <!-- Product Details -->
-      <td class="align-middle">
-        <strong>3x3 EYES鬼籍之闇的契約者. 8</strong>
-        <p class="mb-0 text-muted small">高田裕三. 朱目彤
-          <br>玉皇朝(國際)有限公司
-          <br>漫畫
-          <br>19 厘米 無頁碼  全插圖
-          </p>
-      </td>
-      <!-- Quantity Controls -->
-      <td class="align-middle text-center">
-        <div class="input-group justify-content-center">
-          <button class="btn btn-outline-secondary btn-sm" type="button">-</button>
-          <input type="text" class="form-control text-center" value="1" style="max-width: 40px;">
-          <button class="btn btn-outline-secondary btn-sm" type="button">+</button>
-        </div>
-      </td>
-      <!-- Price -->
-      <td class="align-middle text-center">
-        $19.99
-      </td>
-      <!-- Delete Button -->
-      <td class="align-middle text-center">
-        <button class="btn btn-danger btn-sm">
-          <i class="bi bi-trash ">刪除</i>
-        </button>
-      </td>
-    </tr>
-    <tr>
-      <td class="align-middle text-center" style="width: 30px;">
-        <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
-          <input type="checkbox" class="form-check-input m-0" />
-        </div>
-      </td>
-      <td class="align-middle text-center">
-            <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
-                <a href="book_list/1/9789620455452_large.jpg" data-lightbox="home-images">
-                  <img src="book_list/1/9789620455452_small.jpg.webp" class="img-thumbnail" alt="Product 2" style="max-width: 150px;">
-                </a>
-                </div>
-        </td>
-      <td class="align-middle">
-        <strong>一分鐘現代藝術辭典. 1820-1989</strong>
-        <p class="mb-0 text-muted small">李仕泉 劉亮
-          <br>香港高色調出版有限公司
-          <br>17 厘米 645 頁  插圖
-          <br>藝術</p>
-      </td>
-      <td class="align-middle text-center">
-        <div class="input-group justify-content-center">
-          <button class="btn btn-outline-secondary btn-sm" type="button">-</button>
-          <input type="text" class="form-control text-center" value="2" style="max-width: 40px;">
-          <button class="btn btn-outline-secondary btn-sm" type="button">+</button>
-        </div>
-      </td>
-      <td class="align-middle text-center">
-        $39.98
-      </td>
-      <td class="align-middle text-center">
-        <button class="btn btn-danger btn-sm">
-          <i class="bi bi-trash">刪除</i>
-        </button>
-      </td>
-    </tr>
-  </tbody>
-  <tfoot>
-    <tr>
-      <td colspan="3"></td>
-      <td class="text-left align-center fw-bold">總數量：<span id="total-qty">3</span></td>
-      <td colspan="2" class="text-left align-center fw-bold"><span id="total-amount" unfold>總金額：$59.97</span></td>
-      <!--td class="text-center align-middle"-->
-        
-      </!--td>
-    </tr>
-  </tfoot>
-</table>    
-<br>
-<br>
-<div class="container" align="center">
-  <button class="btn btn-primary px-4" id="next-btn">下一步</button>
-</div>
-<br>
-<br>
-    愉快購物...
-        <div class ="progress">
-            <div class="progress-bar bg-secondary progress-bar-striped progress-bar-animated" style="width:25%">25%</div>
-        </div>        
+<div class="container py-4">
+  <h2 class="mb-4">購物車</h2>
 
+  {% if cart_items %}
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th style="width: 30px; text-align: center;">選取</th>
+          <th style="width: 150px; text-align: center;">商品</th>
+          <th style="min-width: 220px;">商品簡介</th>
+          <th style="width: 160px; text-align: center;">數量</th>
+          <th style="width: 120px; text-align: center;">價錢</th>
+          <th style="width: 60px;">刪除</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart_items %}
+        <tr>
+          <!-- Checkbox -->
+          <td class="align-middle text-center">
+            <div class="d-flex justify-content-center align-items-center">
+              <input type="checkbox" class="form-check-input m-0" data-item-id="{{ item.id }}" />
+            </div>
+          </td>
+          
+          <!-- Product Photo -->
+          <td class="align-middle text-center">
+            <div class="d-flex justify-content-center align-items-center">
+              {% if item.bookId.photo_small %}
+                <a href="{{ item.bookId.photo_small.url }}" data-lightbox="cart-images">
+                  <img src="{{ item.bookId.photo_small.url }}" class="img-thumbnail" 
+                      alt="{{ item.bookId.title }}" style="max-width: 150px;">
+                </a>
+              {% else %}
+                <img src="{% static 'img/default_cover.jpg' %}" class="img-thumbnail" 
+                    alt="No image" style="max-width: 150px;">
+              {% endif %}
+            </div>
+          </td>
+          
+          <!-- Product Details -->
+          <td class="align-middle">
+            <strong>{{ item.bookId.title }}</strong>
+            <p class="mb-0 text-muted small">
+              {% if item.bookId.author %}{{ item.bookId.author }}{% endif %}
+              {% if item.bookId.publisher %}<br>{{ item.bookId.publisher }}{% endif %}
+              {% if item.bookId.category %}<br>{{ item.bookId.category }}{% endif %}
+              {% if item.bookId.details %}<br>{{ item.bookId.details }}{% endif %}
+            </p>
+          </td>
+          
+          <!-- Quantity Controls -->
+          <td class="align-middle text-center">
+            <div class="input-group justify-content-center">
+              <button class="btn btn-outline-secondary btn-sm decrease-qty" 
+                      data-item-id="{{ item.id }}" data-url="{% url 'carts:update_quantity' item.id %}">-</button>
+              <input type="text" class="form-control text-center item-qty" 
+                     value="{{ item.quantity }}" style="max-width: 40px;" readonly>
+              <button class="btn btn-outline-secondary btn-sm increase-qty" 
+                      data-item-id="{{ item.id }}" data-url="{% url 'carts:update_quantity' item.id %}">+</button>
+            </div>
+          </td>
+          
+          <!-- Price -->
+          <td class="align-middle text-center">
+            ${{ item.sub_total }}
+          </td>
+          
+          <!-- Delete Button -->
+          <td class="align-middle text-center">
+            <a href="{% url 'carts:remove_item' item.id %}" class="btn btn-danger btn-sm">
+              <i class="bi bi-trash"></i> 刪除
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3"></td>
+          <td class="text-left align-center fw-bold">總數量：<span id="total-qty">{{ total_quantity }}</span></td>
+          <td colspan="2" class="text-left align-center fw-bold">總金額：$<span id="total-amount">{{ total_price }}</span></td>
+        </tr>
+      </tfoot>
+    </table>
+    
+    <div class="container mt-4" align="center">
+      <a href="{% url 'carts:cart' %}" class="btn btn-primary px-4" id="next-btn">下一步</a>
     </div>
-{% endblock %}    
+    
+    <div class="mt-4">
+      <div class="progress">
+        <div class="progress-bar bg-secondary progress-bar-striped progress-bar-animated" style="width:25%">購物車 (25%)</div>
+      </div>
+    </div>
+  {% else %}
+    <div class="alert alert-info">
+      <h4 class="alert-heading">您的購物車目前是空的</h4>
+      <p>瀏覽我們的商品並添加到購物車開始購物吧！</p>
+      <hr>
+      <p class="mb-0"><a href="{% url 'books:categories' %}" class="btn btn-primary">瀏覽書籍</a></p>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}
