@@ -580,22 +580,34 @@
     100% { opacity: 0; }
   }
 /* ===== background ===== */
-body {
-    background-image: url('../img/bookshop_bg.jpg');
-    background-size: cover;
-    background-attachment: fixed;
-    background-position: center;
-    /* 可選：添加暗色覆蓋使文字更易閱讀 */
-    position: relative;
-}
 
-/* 如需在背景上顯示內容，可添加覆蓋層 */
+/* 為在背景上顯示內容，添加了覆蓋層 */
 .content-container {
     background-color: rgba(255, 255, 255, 0.8);
     padding: 20px;
     border-radius: 5px;
     margin: 20px;
 }
+
+/* ===== 優化背景透明度 ===== */
+body::before {
+    content: "";
+    background-image: url('../img/bookshop-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    opacity: 0.5; /* 降低透明度到50% */
+    filter: brightness(1.1) contrast(0.8); /* 调亮并进一步降低对比度 */
+}
+
+
+
 
 
 
