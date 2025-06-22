@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Book
 from django.contrib import messages
 from django.core.paginator import Paginator
-
+from django.db.models import Q
 # Create your views here.
 
 def categories(request):
@@ -58,7 +58,7 @@ def search(request):
 
     # 如果有輸入關鍵字，就用 title 或 author 做模糊搜尋
     if query:
-        books = books.filter(title__icontains=query) | books.filter(author__icontains=query)
+        books = books.filter(Q(title__icontains=query) | Q(author__icontains=query))
 
     # 如果有選分類，就 filter category
     if category:
@@ -75,8 +75,17 @@ def search(request):
         elif price == '501-':
             books = books.filter(price__gte=501)
 
+    # 分頁處理
+    paginator = Paginator(books, 8)  # 每頁顯示 8 本書
+    page_number = request.GET.get('page', 1)
+    try:
+        page_number = int(page_number)  # 確保 page_number 是整數
+    except ValueError:
+        page_number = 1
+    # 如果 page_number 不是有效的整數，則默認為 1
+    page_obj = paginator.get_page(page_number) 
     # 將搜尋結果傳去 template
-    return render(request, 'books/search.html', {'books': books})
+    return render(request, 'books/search.html', {'books': page_obj, 'query': query, 'category': category, 'price': price})
 
 def hots(request):
     category = request.GET.get('category', 'hots')
