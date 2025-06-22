@@ -74,8 +74,6 @@ def profile_edit(request):
         'profile': profile
     })
 
-    return render(request, 'accounts/profile.html')
-
 def logout(request):
     auth.logout(request)
     messages.success(request, "你已成功登出!")
