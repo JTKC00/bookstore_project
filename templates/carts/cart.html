@@ -1,32 +1,82 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-  <header class="bg-dark py-5">
-    <div class="container px-4 px-lg 5 my-5">
-      <div class="text-center text-white">
-        <h1 class="display-4 fw-bolder">Shopping Cart</h1>
-      </div>
+<header class="bg-dark py-5">
+  <div class="container px-4 px-lg 5 my-5">
+    <div class="text-center text-white">
+      <h1 class="display-4 fw-bolder">Shopping Cart</h1>
     </div>
-  </header>
-  <br />
-  <body>
-    <div class="container">
-      {% if cart_items %}
-        {% for item in cart_items %}
-          <div class="card mb-3">
-            <div class="row g-0">
-              <div class="col-md-4">
-                <img src="{{ item.photo_1.url }}" class="img-fluid rounded-start" />
-              </div>
-              <div class="col-md-8">
-                <div class="card-body">
-                  <h5 class="card-title">{{ item.bookId }} xxx</h5>
-                  <br />
-                </div>
-              </div>
+  </div>
+</header>
+<br />
+<div class="container">
+  {% if cart_items %}
+    {% for item in cart_items %}
+      <!-- cart-item connect with option-->
+      <div class="cart-item mb-3 p-2 border rounded"> 
+        <!--One cart_item per row-->
+        <div class="row g-0">
+          
+          <!--Column 1 for book image-->
+          <div class="col-md-4">
+            <img src="{{ item.bookId.photo_small.url }}" 
+              class="img-fluid rounded-start"
+            />
+          </div>
+          
+          <!--Column 2 for book info-->
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">{{ item.bookId.title }}</h5>
+            </div>
+            <div>單價: ${{ item.unit_price }}</div>
+            <div>
+              數量:
+              <input
+                type="number"
+                class="form-control d-inline-block quantity-input"
+                value="{{ item.quantity }}"
+                min="1"
+                style="width:70px;"
+                data-unit-price="{{ item.unit_price }}"
+              />
+            </div>
+            <div>
+              小計: $<span class="item-subtotal">{{ item.sub_total }}</span>
             </div>
           </div>
-        {% endfor %}
-      {% endif %}
+
+        </div>
+      </div>
+    {% endfor %}
+    <div class="cart-total mt-4">
+      <h4>總計: $<span id="cart-total">{{total}}</span></h4>
     </div>
-  </body>
+  {% endif %}
+  
+
+<script>
+  function updateCartTotal() {
+    let total = 0;
+    document.querySelectorAll('.cart-item').forEach(function(item) {
+      const qtyInput = item.querySelector('.quantity-input');
+      const unitPrice = parseFloat(qtyInput.getAttribute('data-unit-price')); //pass unit-price variable through quantity selector
+      let qty = parseInt(qtyInput.value) || 1 ; //check qty not null
+      qty = Math.max(qty,1); //Math.max(v1,v2) return largest value, qty is at least 1
+      const subtotal = unitPrice * qty;
+      item.querySelector('.item-subtotal').textContent = subtotal.toFixed(2);
+      total += subtotal;
+    });
+    document.getElementById('cart-total').textContent = total.toFixed(2);
+  }
+
+  
+  document.querySelectorAll('.quantity-input').forEach(function(input) {
+    // call updateCartTotal() on quantity-input change
+    input.addEventListener('input', updateCartTotal);
+  });
+
+  // initialize total after DOM is ready
+  document.addEventListener('DOMContentLoaded', updateCartTotal);
+</script>
 {% endblock %}

@@ -6,19 +6,31 @@ from .models import ShopCart, CartItem
 # Create your views here.
 def cart(request):
     # Get Shopcart parameter
-    shopCart = ShopCart()
-    cartItems = CartItem.objects.all()
-    context = {"shopCart":shopCart, "cartItems":cartItems}
+    user = request.user
+    shop_cart, created = ShopCart.objects.get_or_create(userId=user)
+    cart_items = CartItem.objects.filter(shopCartId=shop_cart)
+    total = sum(item.unit_price * item.quantity for item in cart_items)
+    context = {"shop_cart":shop_cart, "cart_items":cart_items, "total": total}
+    print("user",user.id)
     return render(request, 'carts/cart.html', context)
 
-def add_to_cart(request, book_id):
-    if request.method == 'POST':
+def add_to_cart(request):
+    if request.method == 'GET':
+        book_id = request.GET.get('book.id')
         book = get_object_or_404(Book, pk=book_id)
-        user = User.objects.get(pk=1)  # user is a User instance
+        # user = User.objects.get(pk=1)  # user is a User instance
+        user = request.user
         shop_cart, created = ShopCart.objects.get_or_create(userId=user) #assign a User instance to a ForeignKey field (userId),
 
         unit_price = book.price
-        quantity = 1  # or fetch from form data
+        # Get quantity from form
+        try:
+            quantity = int(request.GET.get('quantity', 1)) # Currently use GET not POST
+            print("quantity",quantity)
+            if quantity < 1:
+                quantity = 1
+        except (ValueError, TypeError):
+            quantity = 1
         sub_total = unit_price * quantity
 
         # Get or create CartItem
