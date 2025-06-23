@@ -1,3 +1,4 @@
+import requests
 from django.shortcuts import render, get_object_or_404
 from .models import Book
 from django.contrib import messages
@@ -117,3 +118,15 @@ def hots(request):
         'selected_category': category,
         'category_name': category_name,
     })
+
+def fastapi_search(request):
+    results = []
+    query = request.GET.get('q', '')
+    if query:
+        try:
+            resp = requests.get('http://localhost:8001/search', params={'title': query})
+            if resp.status_code == 200:
+                results = resp.json().get('books', [])
+        except Exception as e:
+            results = [{'title': f'查詢失敗: {e}'}]
+    return render(request, 'books/fastapi_search.html', {'results': results, 'query': query})

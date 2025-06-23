@@ -14,8 +14,8 @@
             <ul class="list-group mb-3">
               {% for item in order_items %}
               <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{ item.book.title }} <span>x{{ item.quantity }}</span>
-                <span class="text-success">${{ item.total_price }}</span>
+                {{ item.bookid.title }} <span>x{{ item.quantity }}</span>
+                <span class="text-success">${{ item.subTotal }}</span>
               </li>
               {% endfor %}
               <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -29,9 +29,8 @@
         <div class="card shadow-sm payment-card">
           <div class="card-body">
             <h4 class="mb-3 text-success" style="font-weight:bold;">選擇付款方式</h4>
-            {% comment %} <form method="post" action="{% url 'orders:payment' %}"> {% endcomment %}
-                <form method="post" action=""> 
-                {% csrf_token %}
+            <form method="post" id="payment-form" enctype="multipart/form-data">
+              {% csrf_token %}
               <div class="mb-3">
                 <label class="form-label fw-bold">付款方式：</label>
                 <div class="form-check">
@@ -47,20 +46,62 @@
                   <label class="form-check-label" for="paypal">PayPal</label>
                 </div>
               </div>
-              <!-- 信用卡資料（可根據 payment_method 動態顯示） -->
-              <div class="mb-3">
-                <label for="card_number" class="form-label">卡號</label>
-                <input type="text" class="form-control" id="card_number" name="card_number" placeholder="1234 5678 9012 3456">
+              <!-- Stripe 付款 -->
+              <div id="credit-card-fields">
+                <button type="button" id="checkout-button" class="btn btn-primary w-100">以 Stripe 支付</button>
               </div>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="expiry" class="form-label">到期日</label>
-                  <input type="text" class="form-control" id="expiry" name="expiry" placeholder="MM/YY">
+              <!-- FPS 付款表單 -->
+              <div id="fps-fields" style="display:none;">
+                <div class="mb-3">
+                  <label class="form-label">FPS 轉數快戶口號碼</label>
+                  <input type="text" class="form-control" value="123456789012" disabled>
+                  <small class="text-muted">請用你的銀行App轉帳到上方戶口，並上傳收據。</small>
                 </div>
-                <div class="col-md-6 mb-3">
-                  <label for="cvv" class="form-label">CVV</label>
-                  <input type="text" class="form-control" id="cvv" name="cvv" placeholder="123">
+                <div class="mb-3">
+                  <label class="form-label">上傳轉帳收據</label>
+                  <input type="file" class="form-control" name="fps_receipt" required>
                 </div>
-              </div
+                <button type="submit" formaction="{% url 'payments:fps_payment' %}" class="btn btn-success w-100">提交 FPS 付款資料</button>
+              </div>
+              <!-- PayPal 付款表單 -->
+              <div id="paypal-fields" style="display:none;">
+                <div class="mb-3">
+                  <label class="form-label">PayPal 電郵</label>
+                  <input type="email" class="form-control" name="paypal_email" placeholder="你的 PayPal 電郵" required>
+                  <small class="text-muted">請轉帳到：payee@example.com 並填寫你的 PayPal 電郵以便確認付款。</small>
+                </div>
+                <button type="submit" formaction="{% url 'payments:paypal_payment' %}" class="btn btn-success w-100">提交 PayPal 付款資料</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  const stripe = Stripe('{{ STRIPE_PUBLIC_KEY }}');
+  const checkoutButton = document.getElementById('checkout-button');
+  checkoutButton.addEventListener('click', async () => {
+    const response = await fetch('/create-checkout-session/{{ order.id }}/', {
+      method: 'POST',
+      headers: {'X-CSRFToken': '{{ csrf_token }}'}
+    });
+    const session = await response.json();
+    const result = await stripe.redirectToCheckout({ sessionId: session.id });
+    if (result.error) {
+      alert(result.error.message);
+    }
+  });
 
+  // 根據付款方式顯示對應的表單欄位
+  const paymentForm = document.getElementById('payment-form');
+  paymentForm.addEventListener('change', (event) => {
+    const value = event.target.value;
+    document.getElementById('credit-card-fields').style.display = value === 'credit' ? 'block' : 'none';
+    document.getElementById('fps-fields').style.display = value === 'fps' ? 'block' : 'none';
+    document.getElementById('paypal-fields').style.display = value === 'paypal' ? 'block' : 'none';
+  });
+</script>
 {% endblock %}
