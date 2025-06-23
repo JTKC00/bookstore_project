@@ -88,7 +88,14 @@
     </table>
     
     <div class="container mt-4" align="center">
-      <a href="{% url 'carts:cart' %}" class="btn btn-primary px-4" id="next-btn">下一步</a>
+<!-- carts/cart.html -->
+<form action="{% url 'orders:shipping' %}" method="GET">
+  <input type="hidden" name="shopcart_id" value="{{ shopcart.id }}">
+  <input type="hidden" name="total_quantity" value="{{ total_quantity }}">  
+  <input type="hidden" name="total_amount" value="{{ total_price }}">    
+  <button type="submit" class="btn btn-primary">前往郵寄資訊</button>
+</form>      
+      <!--<a href="{% url "orders:shipping" %}" class="btn btn-primary px-4" id="next-btn">下一步</a>-->
     </div>
     
     <div class="mt-4">
