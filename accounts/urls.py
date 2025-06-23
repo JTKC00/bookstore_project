@@ -12,5 +12,6 @@ urlpatterns = [
     path('reset/<uidb64>/<token>/', 
          views.password_reset_confirm, 
          name='password_reset_confirm'),
+    path('logout/', views.logout, name='logout'),
 
 ]
