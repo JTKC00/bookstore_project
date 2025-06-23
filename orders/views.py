@@ -55,6 +55,25 @@ def orderconfirm(request):
         shopcart = get_object_or_404(ShopCart, id=shopcart_id, userId=request.user)
         cart_items = shopcart.cartitem_set.all()
 
+        # Check if an order already exists for this cart and user
+        order = Order.objects.filter(shopCartId=shopcart, userId=request.user).first()
+        if order:
+            # If order exists, just show the confirmation page with existing order and items
+            order_items = OrderItem.objects.filter(orderid=order)
+            return render(
+                request,
+                "orders/orderconfirm.html",
+                {
+                    "order": order,
+                    "cart_items": order_items,
+                    "total_quantity": total_quantity,
+                    "total_amount": total_amount,
+                    "shopcart": shopcart,
+                    #                    "already_submitted": True,
+                },
+            )
+
+        # Otherwise, create a new order and order items
         order = Order.objects.create(
             userId=request.user,
             shopCartId=shopcart,
