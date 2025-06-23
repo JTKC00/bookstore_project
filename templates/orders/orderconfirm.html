@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load humanize %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +22,7 @@
                         <p class="text-right">訂單日期 : </p>
                     </div>
                     <div class="col-md-2 mb-2">
-                        <p class="text-left"> {{order.order_date}}</p>
+                        <p class="text-left"> {{order.order_date | date}}</p>
                     </div>
 
                 </div>   
@@ -43,27 +44,27 @@
                     <div class="row">
                         <div class="col-md-6 mb-2">
                             <label for="first_name">姓氏</label>
-                            <input id="first_name" type="text" name="first_name" class="form-control" value="{{order.userid.last_name}}" disabled />
+                            <input id="first_name" type="text" name="first_name" class="form-control" value="{{order.userId.last_name}}" disabled />
                         </div>
                         <div class="col-md-6 mb-2">
                             <label for="last_name">名字</label>
-                            <input id="last_name" type="text" name="last_name" class="form-control" Value="{{order.userid.first_name}}" disabled />
+                            <input id="last_name" type="text" name="last_name" class="form-control" Value="{{order.userId.first_name}}" disabled />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-2">
                             <label for="username">用戶名稱</label>
-                            <input id="username" type="text" name="username" class="form-control" Value="{{order.userid}}" disabled />
+                            <input id="username" type="text" name="username" class="form-control" Value="{{order.userId}}" disabled />
                         </div>
                         <div class="col-md-6 mb-2">
                             <label for="email">電郵</label>
-                            <input id="email" type="email" name="email" class="form-control" Value="{{order.userid.email}}" disabled />
+                            <input id="email" type="email" name="email" class="form-control" Value="{{order.userId.email}}" disabled />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-2">
                             <label for="phone">收件人名稱</label>
-                            <input id="receipient" type="text" name="receipient" class="form-control" value="{{order.receipientreceipient}}" disabled />
+                            <input id="receipient" type="text" name="receipient" class="form-control" value="{{order.receipient}}" disabled />
                         </div>                        
                         <div class="col-md-6 mb-2">
                             <label for="phone">收件人聯絡電話</label>
@@ -94,8 +95,8 @@
       <!-- Product Photo -->
         <td class="align-middle text-center">
             <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
-                <a href="{{order.book.photo_large.url}}" data-lightbox="home-images">
-                  <img src="{{order.book.photo_small}}" class="img-thumbnail" alt="Product 1" style="max-width: 150px;">
+                <a href="{{item.bookId.photo_large.url}}" data-lightbox="home-images">
+                  <img src="{{item.bookId.photo_small.url}}" class="img-thumbnail" alt="Product 1" style="max-width: 150px;">
                 </a>
             </div>
         </td>
@@ -132,7 +133,7 @@
     <tr>
       <td colspan="3"></td>
       <td class="text-left align-middle fw-bold">總數量：<span id="total-qty">3</span></td>
-      <td class="text-left align-middle unfold"><span id="total-amount" unfold>總金額：{{total_amount}}}</span></td>
+      <td class="text-left align-middle unfold"><span id="total-amount" unfold>總金額：{{total_amount}}</span></td>
 
       </td>
     </tr>

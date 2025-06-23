@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from orders.models import Order, OrderItem
 from datetime import datetime
 from carts.models import ShopCart, CartItem
@@ -71,7 +71,7 @@ def orderconfirm(request):
         for item in cart_items:
             OrderItem.objects.create(
                 bookid=item.bookId,
-                CartID=shopcart_id,
+                CartID=item,
                 orderid=order,
                 quantity=item.quantity,
                 unit_price=item.unit_price,
