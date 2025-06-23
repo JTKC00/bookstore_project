@@ -51,11 +51,11 @@
                 <strong>簡介：</strong>
                 <p class="book-intro mt-2">{{ book.introduction|linebreaksbr }}</p>
               </div>
-              <form method="get" action="{% url 'carts:add_to_cart'%}">
+              <form method="get" action="{% url 'carts:add_to_cart' book.id %}">
                 <div class="input-group mb-3" style="max-width: 200px;">
                   <input type="number" name="quantity" value="1" min="1" class="form-control" required>
                   <button type="submit" class="btn btn-secondary">Add to cart</button>
-                  <input type="hidden" name="book.id" value="{{book.id}}" class="btn btn-secondary"/>
+                  <input type="hidden" name="book_id" value="{{ book.id }}">
                 </div>
               </form>
             </div>
