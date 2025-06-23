@@ -158,6 +158,10 @@ def profile_edit(request):
 @login_required
 def change_password(request):
     if request.method =='POST':
+        action = request.POST.get("action")
+        if action == "giveup":
+            return redirect("pages:frontpage")   
+        else:        
             old_password = request.POST.get('old_password')
             if not request.user.check_password(old_password):
                 messages.error(request, "舊密碼不正確")
