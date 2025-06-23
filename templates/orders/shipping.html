@@ -6,112 +6,71 @@
     <title>郵寄資訊</title>
 </head>
 
-
 <section id="register" class="bg-light py-4">
   <div class="container bg-light">
         <div class="card shadow-sm card-body">
                 <h2 class="mb-4 bg-primary text-center text-white">郵寄資訊</h2>
-
                 <div class="row">
                     <div class="col-md-8 mb-2">
-                    </div>   
-             
+                    </div>              
                     <div class="col-md-2 mb-2">
                         <p class="text-right">訂單日期 : </p>
                     </div>
                     <div class="col-md-2 mb-2">
-                        <p class="text-left"> 2025 June 23</p>
-                    </div>
-
-                </div>   
-
-                <div class="row">
-                    <div class="col-md-8 mb-2">
-
-                    </div>                    
-                    <div class="col-md-2 mb-2">
-                        <p class="text-right">訂單編號 : </p>
-                    </div>
-                    <div class="col-md-2 mb-2">
-                        <p class="text-left"> INV20250623001</p>
+                        <p class="text-left"> {% now "Y-m-d H:i" %}</p>
                     </div>
                 </div>   
-
-                <form action={% url "orders:orderconfirm" %} method="POST">
-<!----                    {% csrf_token %}. -->
- 
+                <form action="{% url 'orders:orderconfirm' %}" method="POST">
+                   {% csrf_token %}
                     <div class="row">
                         <div class="col-md-6 mb-2">
                             <label for="first_name">姓氏</label>
-                            <input id="first_name" type="text" name="first_name" class="form-control" disabled />
+                            <input id="first_name" type="text" name="first_name" class="form-control" value="{{shopcart.userid.first_name}}" disabled />
                         </div>
                         <div class="col-md-6 mb-2">
                             <label for="last_name">名字</label>
-                            <input id="last_name" type="text" name="last_name" class="form-control" disabled />
+                            <input id="last_name" type="text" name="last_name" class="form-control" value="{{shopcart.userid.last_name}}" disabled />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-2">
                             <label for="username">用戶名稱</label>
-                            <input id="username" type="text" name="username" class="form-control" disabled />
+                            <input id="username" type="text" name="username" class="form-control" value="{{shopcart.userid}}" disabled />
                         </div>
                         <div class="col-md-6 mb-2">
                             <label for="email">電郵</label>
-                            <input id="email" type="email" name="email" class="form-control" disabled />
+                            <input id="email" type="email" name="email" class="form-control" value="{{shopcart.userid.email}}" disabled />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-2">
                             <label for="phone">收件人名稱</label>
-                            <input id="receipient" type="text" name="receipient" class="form-control" required />
+                            <input id="receipient" type="text" name="receipient" class="form-control" value="{{order.receipient}}"required />
                         </div>                        
                         <div class="col-md-6 mb-2">
                             <label for="phone">收件人聯絡電話</label>
-                            <input id="receipient_phone" type="phone" name="receipient_phone" class="form-control" required />
+                            <input id="receipient_phone" type="phone" name="receipient_phone" class="form-control" value="{{order.receipient_phone}}" required />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12 mb-2">
-                            <label for="address">郵寄地址 (選填）</label>
-                            <input id="address" type="text" name="address" class="form-control" required />
+                            <label for="address">郵寄地址 </label>
+                            <input id="shipping_address" type="text" name="shipping_address" class="form-control" value="{{order.shipping_address|default_if_none:''}}" required />
                         </div>
                     </div>
-<!----
 
-                    <div class="row">
-                        <div class="col-md-6 mb-2">
-                            <label for="catagory_id">興趣書類 (選填）</label>
-                            <select class="form-control" id="catagory_id">
-                                <option></option>
-                                <option>文學</option>
-                                <option>社會科學</option>
-                                <option>商業財經</option>
-                                <option>飲食文化</option>
-                                <option>心理勵志</option>
-                                <option>其他</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <label for="password">密碼</label>
-                            <input id="password" type="password" name="password" class="form-control" required />
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <label for="password2">確認密碼</label>
-                            <input id="password2" placholder="確認密碼" type="password" name="password2" class="form-control" required />
-                        </div>
-                    </div>
--->
 <br>
 <br>
 <br>
 <br>
                     <div class="row">
                         <div class="col-md-3 mb-2"></div>
-                        <button type="clear" class="btn btn-danger text-white fw-bold">    清空      </button>
+                        <button type="reset" class="btn btn-danger text-white fw-bold">    清空      </button>
 
                         <div class="col-md-4 mt-2"></div>
+                        <input type="hidden" name="shopcart_id" value="{{ shopcart.id }}">
+                        <input type="hidden" name="total_quantity" value="{{ total_quantity }}">   
+                        <input type="hidden" name="total_amount" value="{{ total_amount }}">  
                         <button type="submit" class="btn btn-warning text-white fw-bold">    確認資料    </button>
                     </div>
                 </form>
@@ -129,4 +88,4 @@
 </section>
        
 </div>
-{% endblock %}    
+{% endblock %}

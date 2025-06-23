@@ -88,7 +88,7 @@
     </table>
     
     <div class="container mt-4" align="center">
-      <a href="{% url 'orders:orderconfirm' %}" class="btn btn-primary px-4" id="next-btn">下一步</a>
+      <a href="{% url 'orders:shipping' %}?shopcart_id={{ shopcart.id }}&total_amount={{ total_price }}&total_quantity={{ total_quantity }}" class="btn btn-primary px-4" id="next-btn">下一步</a>
     </div>
     
     <div class="mt-4">
