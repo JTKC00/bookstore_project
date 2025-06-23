@@ -38,7 +38,7 @@
                     </div>
                 </div>   
 
-                <form action={% url "payments:payment" %} method="POST">
+                <form action="{% url 'payments:payment' order.id %}" method="POST">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-md-6 mb-2">
@@ -168,4 +168,4 @@
   </div>
 </section>       
 </div>
-{% endblock %}    
+{% endblock %}

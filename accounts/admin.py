@@ -9,6 +9,7 @@ class ProfileInline(admin.StackedInline):
     verbose_name_plural = 'Profile'
     fk_name = 'user'
 
+
 class UserAdmin(BaseUserAdmin):
     list_display = ('username', 'email', 'first_name', 'last_name',)
     list_per_page = 20
