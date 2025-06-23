@@ -15,6 +15,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.messages import constants as messages
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -148,5 +149,15 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # 相片上傳路徑
 
+MESSAGE_TAGS = {
+    messages.ERROR : 'danger',
+    messages.SUCCESS : 'success'
+}
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = True
 
