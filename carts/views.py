@@ -7,47 +7,50 @@ from django.http import JsonResponse
 
 def cart(request):
     if request.user.is_authenticated:
+        # 獲取用戶最新的購物車，如果沒有則創建新的
         try:
-            # 獲取用戶的購物車
-            shopcart = ShopCart.objects.get(userId=request.user)
-
-            # 只顯示未下單的商品
-            cart_items = shopcart.cartitem_set.filter(is_ordered=False)
-
-            # 計算總數量和總價格
-            total_quantity = sum(item.quantity for item in cart_items)
-            total_price = sum(item.sub_total for item in cart_items)
-
-            # 檢查購物車是否為空
-            if not cart_items.exists():
-                messages.info(
-                    request, "您的購物車目前是空的，歡迎瀏覽商品並加入購物車。"
-                )
-
-            return render(
-                request,
-                "carts/cart.html",
-                {
-                    "shopcart": shopcart,
-                    "cart_items": cart_items,
-                    "total_quantity": total_quantity,
-                    "total_price": total_price,
-                },
-            )
-        except ShopCart.DoesNotExist:
-            # 用戶沒有購物車，創建一個新的
+            # 優先獲取有未下單商品的購物車
+            shopcart = ShopCart.objects.filter(
+                userId=request.user,
+                cartitem__is_ordered=False
+            ).distinct().first()
+            
+            if not shopcart:
+                # 如果沒有包含未下單商品的購物車，獲取最新的購物車
+                shopcart = ShopCart.objects.filter(userId=request.user).order_by('-id').first()
+            
+            if not shopcart:
+                # 如果完全沒有購物車，創建新的
+                shopcart = ShopCart.objects.create(userId=request.user)
+                print(f"[DEBUG] 為用戶 {request.user} 創建了新的購物車 {shopcart.id}")
+        except Exception as e:
+            # 發生任何錯誤時創建新購物車
             shopcart = ShopCart.objects.create(userId=request.user)
-            messages.info(request, "已為您創建新的購物車，現在可以開始購物了。")
-            return render(
-                request,
-                "carts/cart.html",
-                {
-                    "shopcart": shopcart,
-                    "cart_items": [],
-                    "total_quantity": 0,
-                    "total_price": 0,
-                },
+            print(f"[DEBUG] 發生錯誤後為用戶 {request.user} 創建了新的購物車 {shopcart.id}: {str(e)}")
+
+        # 只顯示未下單的商品
+        cart_items = shopcart.cartitem_set.filter(is_ordered=False)
+
+        # 計算總數量和總價格
+        total_quantity = sum(item.quantity for item in cart_items)
+        total_price = sum(item.sub_total for item in cart_items)
+
+        # 檢查購物車是否為空
+        if not cart_items.exists():
+            messages.info(
+                request, "您的購物車目前是空的，歡迎瀏覽商品並加入購物車。"
             )
+
+        return render(
+            request,
+            "carts/cart.html",
+            {
+                "shopcart": shopcart,
+                "cart_items": cart_items,
+                "total_quantity": total_quantity,
+                "total_price": total_price,
+            },
+        )
     else:
         messages.error(request, "您尚未登入，請先登入以使用購物車功能。")
         return redirect("accounts:login")
@@ -59,34 +62,77 @@ def add_to_cart(request, book_id):
         return redirect("accounts:login")
 
     book = get_object_or_404(Book, pk=book_id)
+    
+    # 檢查庫存
+    if book.stock <= 0:
+        messages.error(request, f"抱歉，{book.title} 目前缺貨。")
+        return redirect("books:book", book_id=book_id)
 
-    # 獲取或創建用戶購物車
-    shop_cart, created = ShopCart.objects.get_or_create(userId=request.user)
+    # 獲取或創建用戶購物車（使用最新的有效購物車）
+    try:
+        # 優先獲取有未下單商品的購物車
+        shop_cart = ShopCart.objects.filter(
+            userId=request.user,
+            cartitem__is_ordered=False
+        ).distinct().first()
+        
+        if not shop_cart:
+            # 如果沒有包含未下單商品的購物車，獲取最新的購物車
+            shop_cart = ShopCart.objects.filter(userId=request.user).order_by('-id').first()
+        
+        if not shop_cart:
+            # 如果完全沒有購物車，創建新的
+            shop_cart = ShopCart.objects.create(userId=request.user)
+            print(f"[DEBUG] 為用戶 {request.user} 創建了新的購物車 {shop_cart.id}")
+    except Exception as e:
+        # 發生任何錯誤時創建新購物車
+        shop_cart = ShopCart.objects.create(userId=request.user)
+        print(f"[DEBUG] 發生錯誤後為用戶 {request.user} 創建了新的購物車 {shop_cart.id}: {str(e)}")
 
     unit_price = book.price
     quantity = 1  # 或從表單獲取數量
     sub_total = unit_price * quantity
 
-    # 獲取或創建購物車項目
-    cart_item, created = CartItem.objects.get_or_create(
-        bookId=book,
-        shopCartId=shop_cart,
-        defaults={
-            "quantity": quantity,
-            "unit_price": unit_price,
-            "sub_total": sub_total,
-        },
-    )
-
-    if not created:
-        # 如果項目已存在，更新數量和小計
-        cart_item.quantity += quantity
+    # 檢查是否已在購物車中
+    try:
+        cart_item = CartItem.objects.get(
+            bookId=book,
+            shopCartId=shop_cart,
+            is_ordered=False  # 只檢查未下單的商品
+        )
+        # 檢查加入後是否超過庫存
+        new_quantity = cart_item.quantity + quantity
+        if new_quantity > book.stock:
+            messages.error(
+                request, 
+                f"抱歉，{book.title} 庫存不足。目前庫存：{book.stock}，購物車中已有：{cart_item.quantity}"
+            )
+            return redirect("carts:cart")
+        
+        # 更新數量和小計
+        cart_item.quantity = new_quantity
         cart_item.sub_total = cart_item.unit_price * cart_item.quantity
         cart_item.save()
         messages.success(
             request, f"已將 {book.title} 的數量增加至 {cart_item.quantity}。"
         )
-    else:
+    except CartItem.DoesNotExist:
+        # 創建新的購物車項目
+        if quantity > book.stock:
+            messages.error(
+                request, 
+                f"抱歉，{book.title} 庫存不足。目前庫存：{book.stock}"
+            )
+            return redirect("books:book", book_id=book_id)
+            
+        CartItem.objects.create(
+            bookId=book,
+            shopCartId=shop_cart,
+            quantity=quantity,
+            unit_price=unit_price,
+            sub_total=sub_total,
+            is_ordered=False
+        )
         messages.success(request, f"{book.title} 已成功添加到購物車。")
 
     # 重定向到購物車頁面
@@ -104,12 +150,20 @@ def update_quantity(request, item_id):
         return JsonResponse({"error": "無權限修改此項目"}, status=403)
 
     action = request.GET.get("action")
+    book = cart_item.bookId
 
     if action == "increase":
+        # 檢查庫存限制
+        if cart_item.quantity >= book.stock:
+            return JsonResponse({
+                "error": f"庫存不足！{book.title} 目前庫存：{book.stock}"
+            }, status=400)
         cart_item.quantity += 1
     elif action == "decrease":
         if cart_item.quantity > 1:
             cart_item.quantity -= 1
+        else:
+            return JsonResponse({"error": "數量不能少於1"}, status=400)
 
     cart_item.sub_total = cart_item.unit_price * cart_item.quantity
     cart_item.save()
@@ -123,9 +177,10 @@ def update_quantity(request, item_id):
     return JsonResponse(
         {
             "quantity": cart_item.quantity,
-            "sub_total": cart_item.sub_total,
-            "total_price": total_price,
+            "sub_total": float(cart_item.sub_total),
+            "total_price": float(total_price),
             "total_quantity": total_quantity,
+            "stock": book.stock,  # 返回當前庫存
         }
     )
 

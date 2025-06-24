@@ -49,6 +49,13 @@
               {% if item.bookId.publisher %}<br>{{ item.bookId.publisher }}{% endif %}
               {% if item.bookId.category %}<br>{{ item.bookId.category }}{% endif %}
               {% if item.bookId.details %}<br>{{ item.bookId.details }}{% endif %}
+              <br>
+              <span class="{% if item.bookId.stock <= 0 %}text-danger{% elif item.bookId.stock <= 5 %}text-warning{% else %}text-success{% endif %}">
+                庫存：{{ item.bookId.stock }} 本
+              </span>
+              {% if item.quantity > item.bookId.stock %}
+                <br><small class="text-danger">⚠️ 數量超過庫存</small>
+              {% endif %}
             </p>
           </td>
           
@@ -156,6 +163,16 @@
         // 更新總計
         document.getElementById('total-qty').textContent = data.total_quantity;
         document.getElementById('total-amount').textContent = data.total_price;
+        
+        // 更新增加按鈕狀態（如果接近庫存上限）
+        const increaseBtn = buttonElement.closest('tr').querySelector('.increase-qty');
+        if (data.quantity >= data.stock) {
+          increaseBtn.disabled = true;
+          increaseBtn.title = '庫存不足';
+        } else {
+          increaseBtn.disabled = false;
+          increaseBtn.title = '';
+        }
       })
       .catch(error => {
         console.error('Error:', error);

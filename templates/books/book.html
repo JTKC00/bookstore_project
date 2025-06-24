@@ -53,10 +53,23 @@
               </div>
               <form method="get" action="{% url 'carts:add_to_cart' book.id %}">
                 <div class="input-group mb-3" style="max-width: 200px;">
-                  <input type="number" name="quantity" value="1" min="1" class="form-control" required>
-                  <button type="submit" class="btn btn-secondary">Add to cart</button>
+                  <input type="number" name="quantity" value="1" min="1" max="{{ book.stock }}" class="form-control" 
+                         {% if book.stock <= 0 %}disabled{% endif %} required>
+                  <button type="submit" class="btn btn-secondary" 
+                          {% if book.stock <= 0 %}disabled{% endif %}>
+                    {% if book.stock <= 0 %}
+                      缺貨
+                    {% else %}
+                      加入購物車
+                    {% endif %}
+                  </button>
                   <input type="hidden" name="book_id" value="{{ book.id }}">
                 </div>
+                {% if book.stock <= 0 %}
+                  <small class="text-danger">此商品目前缺貨</small>
+                {% elif book.stock <= 5 %}
+                  <small class="text-warning">庫存不多，僅剩 {{ book.stock }} 本</small>
+                {% endif %}
               </form>
             </div>
           </div>

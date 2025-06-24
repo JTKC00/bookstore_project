@@ -41,23 +41,49 @@ def orderconfirm(request):
         shopcart = get_object_or_404(ShopCart, id=shopcart_id, userId=request.user)
         cart_items = shopcart.cartitem_set.filter(is_ordered=False)
 
-        # Check if an order already exists for this cart and user
-        order = Order.objects.filter(shopCartId=shopcart, userId=request.user).first()
-        if order:
-            # If order exists, just show the confirmation page with existing order and items
-            order_items = OrderItem.objects.filter(orderid=order)
-            return render(
-                request,
-                "orders/orderconfirm.html",
-                {
-                    "order": order,
-                    "cart_items": order_items,
-                    "total_quantity": total_quantity,
-                    "total_amount": total_amount,
-                    "shopcart": shopcart,
-                    #                    "already_submitted": True,
-                },
-            )
+        # 檢查是否已經有未付款的訂單（避免重複創建）
+        pending_order = Order.objects.filter(
+            shopCartId=shopcart, 
+            userId=request.user, 
+            payment_status="PENDI"
+        ).first()
+        
+        if pending_order:
+            # 檢查該訂單的商品是否與當前購物車一致
+            order_items = OrderItem.objects.filter(orderid=pending_order)
+            cart_items_ids = set(cart_items.values_list('id', flat=True))
+            order_cart_ids = set(order_items.values_list('CartID__id', flat=True))
+            
+            # 如果訂單商品與購物車商品一致，則顯示現有訂單
+            if cart_items_ids == order_cart_ids and cart_items.exists():
+                return render(
+                    request,
+                    "orders/orderconfirm.html",
+                    {
+                        "order": pending_order,
+                        "cart_items": order_items,
+                        "total_quantity": total_quantity,
+                        "total_amount": total_amount,
+                        "shopcart": shopcart,
+                    },
+                )
+            else:
+                # 如果購物車已改變，刪除舊訂單重新創建
+                pending_order.delete()
+
+        # 在創建訂單前檢查所有商品庫存
+        stock_errors = []
+        for item in cart_items:
+            if item.quantity > item.bookId.stock:
+                stock_errors.append(
+                    f"{item.bookId.title}：需要 {item.quantity} 本，但庫存只有 {item.bookId.stock} 本"
+                )
+        
+        if stock_errors:
+            for error in stock_errors:
+                messages.error(request, error)
+            messages.error(request, "請調整購物車中的商品數量後再試。")
+            return redirect("carts:cart")
 
         # Otherwise, create a new order and order items
         order = Order.objects.create(
