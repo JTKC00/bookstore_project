@@ -1,0 +1,138 @@
+<!-- filepath: templates/orders/order_list.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-list-alt mr-2"></i>我的訂單</h2>
+        <a href="/" class="btn btn-outline-primary">
+          <i class="fas fa-home mr-1"></i>返回首頁
+        </a>
+      </div>
+
+      {% if orders %}
+        {% for order in orders %}
+        <div class="card mb-3 shadow-sm">
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-md-2">
+                <h6 class="mb-1">訂單編號</h6>
+                <span class="text-muted">#{{ order.id }}</span>
+              </div>
+              <div class="col-md-2">
+                <h6 class="mb-1">下單時間</h6>
+                <span class="text-muted">{{ order.order_date|date:"m/d H:i" }}</span>
+              </div>
+              <div class="col-md-2">
+                <h6 class="mb-1">訂單金額</h6>
+                <span class="text-success font-weight-bold">HK${{ order.total_amount }}</span>
+              </div>
+              <div class="col-md-2">
+                <h6 class="mb-1">付款狀態</h6>
+                {% if order.payment_status == "PAID" %}
+                  <span class="badge badge-success">已付款</span>
+                {% elif order.payment_status == "PENDI" %}
+                  <span class="badge badge-warning">待付款</span>
+                {% else %}
+                  <span class="badge badge-secondary">{{ order.payment_status }}</span>
+                {% endif %}
+              </div>
+              <div class="col-md-2">
+                <h6 class="mb-1">運送狀態</h6>
+                {% if order.shipping_status == "STOCK" %}
+                  <span class="badge badge-info">備貨中</span>
+                {% elif order.shipping_status == "SHIP" %}
+                  <span class="badge badge-primary">已出貨</span>
+                {% elif order.shipping_status == "DELIV" %}
+                  <span class="badge badge-success">已送達</span>
+                {% else %}
+                  <span class="badge badge-secondary">{{ order.shipping_status }}</span>
+                {% endif %}
+              </div>
+              <div class="col-md-2 text-right">
+                <div class="btn-group" role="group">
+                  <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-eye mr-1"></i>查看詳情
+                  </a>
+                  {% if order.payment_status == "PENDI" %}
+                    <a href="{% url 'payments:payment' order.id %}" class="btn btn-success btn-sm">
+                      <i class="fas fa-credit-card mr-1"></i>付款
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            
+            <!-- 訂單商品預覽 -->
+            <hr class="my-3">
+            <div class="row">
+              <div class="col-12">
+                <h6 class="text-muted mb-2">商品：</h6>
+                {% with order_items=order.orderitem_set.all %}
+                  <div class="d-flex flex-wrap">
+                    {% for item in order_items|slice:":3" %}
+                      <div class="mr-3 mb-2 d-flex align-items-center">
+                        {% if item.bookid.image %}
+                          <img src="{{ item.bookid.image.url }}" alt="{{ item.bookid.title }}" 
+                               class="rounded mr-2" style="width: 30px; height: 36px; object-fit: cover;">
+                        {% else %}
+                          <div class="bg-light rounded mr-2 d-flex align-items-center justify-content-center" 
+                               style="width: 30px; height: 36px;">
+                            <i class="fas fa-book text-muted" style="font-size: 12px;"></i>
+                          </div>
+                        {% endif %}
+                        <small>{{ item.bookid.title|truncatechars:20 }} x{{ item.quantity }}</small>
+                      </div>
+                    {% endfor %}
+                    {% if order_items.count > 3 %}
+                      <small class="text-muted align-self-center">...等 {{ order_items.count }} 項商品</small>
+                    {% endif %}
+                  </div>
+                {% endwith %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+        <!-- 分頁（如需要） -->
+        {% if orders.has_other_pages %}
+        <nav aria-label="訂單分頁">
+          <ul class="pagination justify-content-center">
+            {% if orders.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ orders.previous_page_number }}">&laquo; 上一頁</a>
+              </li>
+            {% endif %}
+            
+            <li class="page-item active">
+              <span class="page-link">第 {{ orders.number }} 頁，共 {{ orders.paginator.num_pages }} 頁</span>
+            </li>
+            
+            {% if orders.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ orders.next_page_number }}">下一頁 &raquo;</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+        {% endif %}
+
+      {% else %}
+        <!-- 沒有訂單時顯示 -->
+        <div class="text-center py-5">
+          <i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i>
+          <h4>還沒有任何訂單</h4>
+          <p class="text-muted">開始購物，創建你的第一個訂單吧！</p>
+          <a href="/" class="btn btn-primary">
+            <i class="fas fa-shopping-cart mr-1"></i>開始購物
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

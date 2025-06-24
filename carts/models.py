@@ -15,3 +15,4 @@ class CartItem(models.Model):
     quantity = models.IntegerField()
     sub_total = models.DecimalField(max_digits=10, decimal_places=2)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    is_ordered = models.BooleanField(default=False)  # 標記是否已下單

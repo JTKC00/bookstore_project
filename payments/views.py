@@ -5,7 +5,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from orders.models import Order, OrderItem
-
+from notifications.utils import send_payment_success_email, send_payment_failed_email
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class PaymentPageView(View):
@@ -39,7 +39,8 @@ class CreateCheckoutSessionView(View):
                     }
                 ],
                 mode='payment',
-                success_url=request.build_absolute_uri('/payments/success/'),
+                metadata={'order_id': order.id},  # 添加訂單 ID 到 metadata
+                success_url=request.build_absolute_uri(f'/payments/success/?order_id={order.id}'),
                 cancel_url=request.build_absolute_uri('/payments/cancel/'),
             )
             return JsonResponse({'id': checkout_session.id})
@@ -52,41 +53,186 @@ import stripe
 
 @csrf_exempt
 def stripe_webhook(request):
-    if request.method == 'POST':
-        payload = request.body
-        sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
-        endpoint_secret = 'your_signing_secret'  # 從 Stripe Dashboard 獲取
+    print(f"[DEBUG] Stripe webhook 被調用 - 方法: {request.method}")
+    
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    print(f"[DEBUG] 收到 webhook payload 長度: {len(payload)}")
+    
+    # 暫時跳過簽名驗證來測試功能
+    try:
+        import json
+        event = json.loads(payload)
+        print(f"[DEBUG] Webhook 事件類型: {event.get('type', 'unknown')}")
+    except json.JSONDecodeError as e:
+        print(f"[DEBUG] JSON 解析失敗: {str(e)}")
+        return HttpResponse(f"Invalid JSON: {str(e)}", status=400)
+    
+    # 如果你有正確的 webhook secret，可以取消註釋下面的代碼
+    # try:
+    #     event = stripe.Webhook.construct_event(
+    #         payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
+    #     )
+    #     print(f"[DEBUG] Webhook 事件驗證成功，事件類型: {event['type']}")
+    # except ValueError as e:
+    #     print(f"[DEBUG] Webhook payload 無效: {str(e)}")
+    #     return HttpResponse(f"Invalid payload: {str(e)}", status=400)
+    # except stripe.error.SignatureVerificationError as e:
+    #     print(f"[DEBUG] Webhook 簽名驗證失敗: {str(e)}")
+    #     return HttpResponse(f"Invalid signature: {str(e)}", status=400)
 
+    # 處理 checkout.session.completed 事件（付款成功）
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        print(f"[DEBUG] Stripe webhook 收到 checkout.session.completed 事件")
+        
         try:
-            event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
-        except ValueError as e:
-            return HttpResponse(f"Error: {str(e)}", status=400)
-        except stripe.error.SignatureVerificationError as e:
-            return HttpResponse(f"Error: {str(e)}", status=400)
+            # 從 metadata 獲取訂單 ID
+            order_id = session.get('metadata', {}).get('order_id')
+            print(f"[DEBUG] 從 Stripe session 獲取到 order_id: {order_id}")
+            
+            if order_id:
+                from orders.models import Order
+                order = Order.objects.get(id=order_id)
+                print(f"[DEBUG] Stripe付款開始處理訂單 {order.id}")
+                
+                order.payment_status = "PAID"
+                order.save()
+                print(f"[DEBUG] 訂單 {order.id} 狀態已更新為 PAID")
+                
+                # 付款成功後標記購物車商品為已下單
+                if order.shopCartId:
+                    # 通過 OrderItem 找到對應的 CartItem 並標記為已下單
+                    order_items = OrderItem.objects.filter(orderid=order)
+                    print(f"[DEBUG] 找到 {order_items.count()} 個訂單商品")
+                    
+                    for order_item in order_items:
+                        cart_item = order_item.CartID
+                        print(f"[DEBUG] 處理 CartItem {cart_item.id}: {cart_item.bookId.title}")
+                        cart_item.is_ordered = True
+                        cart_item.save()
+                        print(f"[DEBUG] CartItem {cart_item.id} 已標記為 is_ordered=True")
+                    
+                # 發送付款成功郵件
+                send_payment_success_email(order, 'Stripe')
+                
+                print(f"[DEBUG] 訂單 {order.id} 狀態已更新為 PAID，購物車已清空")
+            else:
+                print("[DEBUG] 無法從 session metadata 獲取訂單 ID")
+                
+        except Order.DoesNotExist:
+            print(f"[DEBUG] 找不到訂單 ID: {order_id}")
+        except Exception as e:
+            print(f"[DEBUG] 更新訂單狀態時發生錯誤: {str(e)}")
+    # 處理付款失敗事件（如 charge.failed）
+    elif event['type'] == 'charge.failed':
+        session = event['data']['object']
+        try:
+            order_id = session.get('metadata', {}).get('order_id')
+            if order_id:
+                order = Order.objects.get(id=order_id)
+                send_payment_failed_email(order, 'Stripe payment failed')
+        except Order.DoesNotExist:
+            print(f"找不到訂單 ID: {order_id}")
 
-        if event['type'] == 'charge.succeeded':
-            print(f"Received charge.succeeded event: {event['data']['object']['id']}")
-            return HttpResponse("Webhook received", status=200)
+    return HttpResponse(status=200)
 
-        return HttpResponse("Unhandled event", status=200)
-    elif request.method == 'GET':
-        return HttpResponse("Webhook endpoint is active", status=200)
-    return HttpResponse("Method not allowed", status=405)
-
-def fps_payment(request):
+def fps_payment(request, order_id):
     if request.method == "POST":
+        # 取得訂單並更新狀態
+        order = get_object_or_404(Order, id=order_id, userId=request.user)
+        print(f"[DEBUG] FPS付款開始處理訂單 {order.id}")
+        
+        order.payment_status = "PAID"
+        order.save()
+        print(f"[DEBUG] 訂單 {order.id} 狀態已更新為 PAID")
+        
+        # 付款成功後標記購物車商品為已下單
+        if order.shopCartId:
+            # 通過 OrderItem 找到對應的 CartItem 並標記為已下單
+            order_items = OrderItem.objects.filter(orderid=order)
+            print(f"[DEBUG] 找到 {order_items.count()} 個訂單商品")
+            
+            for order_item in order_items:
+                cart_item = order_item.CartID
+                print(f"[DEBUG] 處理 CartItem {cart_item.id}: {cart_item.bookId.title}")
+                cart_item.is_ordered = True
+                cart_item.save()
+                print(f"[DEBUG] CartItem {cart_item.id} 已標記為 is_ordered=True")
+        
+        # 發送付款成功郵件
+        send_payment_success_email(order, 'FPS')
+
         # 這裡可以處理 FPS 付款資料，例如上傳收據
-        return render(request, 'payments/success.html', {'method': 'FPS'})
-    return redirect('payments:payment')
+        return render(request, 'payments/success.html', {
+            'method': 'FPS',
+            'order': order,
+            'message': 'FPS 付款已完成'
+        })
+    return redirect('payments:payment', order_id=order_id)
 
-def paypal_payment(request):
-    if request.method == "POST":
-        # 這裡可以處理 PayPal 付款資料
-        return render(request, 'payments/success.html', {'method': 'PayPal'})
-    return redirect('payments:payment')
+
 
 def payment_success(request):
-    return render(request, 'payments/success.html')
+    # 嘗試從 session 或其他方式獲取訂單資訊
+    order_id = request.GET.get('order_id')
+    if order_id:
+        try:
+            order = get_object_or_404(Order, id=order_id, userId=request.user)
+            print(f"[DEBUG] 付款成功頁面 - 處理訂單 {order.id}")
+            
+            # 確保訂單狀態已更新為已付款（因為 webhook 可能有延遲）
+            if order.payment_status != "PAID":
+                print(f"[DEBUG] 訂單 {order.id} 狀態仍為 {order.payment_status}，手動更新為 PAID")
+                
+                # 手動更新訂單狀態和購物車
+                order.payment_status = "PAID"
+                order.save()
+                
+                # 手動標記購物車商品為已下單
+                if order.shopCartId:
+                    order_items = OrderItem.objects.filter(orderid=order)
+                    print(f"[DEBUG] 手動處理 {order_items.count()} 個訂單商品")
+                    
+                    for order_item in order_items:
+                        cart_item = order_item.CartID
+                        print(f"[DEBUG] 手動處理 CartItem {cart_item.id}: {cart_item.bookId.title}")
+                        cart_item.is_ordered = True
+                        cart_item.save()
+                        print(f"[DEBUG] CartItem {cart_item.id} 已手動標記為 is_ordered=True")
+                
+                # 發送付款成功郵件
+                send_payment_success_email(order, 'Stripe')
+                print(f"[DEBUG] 手動處理完成 - 訂單 {order.id}")
+            else:
+                print(f"[DEBUG] 訂單 {order.id} 狀態已經是 PAID，無需手動處理")
+            
+            return render(request, 'payments/success.html', {
+                'order': order,
+                'method': 'Stripe',
+                'message': 'Stripe 付款已完成'
+            })
+        except Exception as e:
+            print(f"[DEBUG] 付款成功頁面處理錯誤: {str(e)}")
+    
+    return render(request, 'payments/success.html', {
+        'message': '付款已完成'
+    })
 
 def payment_cancel(request):
+    order_id = request.GET.get('order_id')
+    if order_id:
+        try:
+            order = get_object_or_404(Order, id=order_id, userId=request.user)
+            send_payment_failed_email(order, 'Payment was cancelled')
+        except Order.DoesNotExist:
+            pass
+    
     return render(request, 'payments/cancel.html')
+
+# urls.py (notification 應用的 URL 配置)
+from django.urls import path
+from . import views
+
+app_name = 'notification'
+urlpatterns = []

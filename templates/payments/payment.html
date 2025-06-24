@@ -42,10 +42,6 @@
                   <input class="form-check-input" type="radio" name="payment_method" id="fps" value="fps">
                   <label class="form-check-label" for="fps">轉數快 FPS</label>
                 </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="payment_method" id="paypal" value="paypal">
-                  <label class="form-check-label" for="paypal">PayPal</label>
-                </div>
               </div>
               <!-- Stripe 付款 -->
               <div id="credit-card-fields">
@@ -62,16 +58,7 @@
                   <label class="form-label">上傳轉帳收據</label>
                   <input type="file" class="form-control" name="fps_receipt" required>
                 </div>
-                <button type="submit" formaction="{% url 'payments:fps_payment' %}" class="btn btn-success w-100">提交 FPS 付款資料</button>
-              </div>
-              <!-- PayPal 付款表單 -->
-              <div id="paypal-fields" style="display:none;">
-                <div class="mb-3">
-                  <label class="form-label">PayPal 電郵</label>
-                  <input type="email" class="form-control" name="paypal_email" placeholder="你的 PayPal 電郵" required>
-                  <small class="text-muted">請轉帳到：payee@example.com 並填寫你的 PayPal 電郵以便確認付款。</small>
-                </div>
-                <button type="submit" formaction="{% url 'payments:paypal_payment' %}" class="btn btn-success w-100">提交 PayPal 付款資料</button>
+                <button type="submit" formaction="{% url 'payments:fps_payment' order.id %}" class="btn btn-success w-100">提交 FPS 付款資料</button>
               </div>
             </form>
           </div>
@@ -137,7 +124,6 @@
     const value = event.target.value;
     document.getElementById('credit-card-fields').style.display = value === 'credit' ? 'block' : 'none';
     document.getElementById('fps-fields').style.display = value === 'fps' ? 'block' : 'none';
-    document.getElementById('paypal-fields').style.display = value === 'paypal' ? 'block' : 'none';
   });
 </script>
 {% endblock %}

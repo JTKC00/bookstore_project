@@ -11,8 +11,8 @@ def cart(request):
             # 獲取用戶的購物車
             shopcart = ShopCart.objects.get(userId=request.user)
 
-            # 使用默認的反向關聯名
-            cart_items = shopcart.cartitem_set.all()
+            # 只顯示未下單的商品
+            cart_items = shopcart.cartitem_set.filter(is_ordered=False)
 
             # 計算總數量和總價格
             total_quantity = sum(item.quantity for item in cart_items)
@@ -116,7 +116,7 @@ def update_quantity(request, item_id):
 
     # 重新計算購物車總計
     shopcart = cart_item.shopCartId
-    cart_items = shopcart.cartitem_set.all()
+    cart_items = shopcart.cartitem_set.filter(is_ordered=False)
     total_price = sum(item.sub_total for item in cart_items)
     total_quantity = sum(item.quantity for item in cart_items)
 

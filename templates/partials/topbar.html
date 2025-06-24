@@ -15,6 +15,9 @@
             {% if user.is_authenticated %}
                 <span class="text-white">歡迎, {{ user.username }}</span>
                 <a href="/accounts/profile/" class="btn btn-link text-white">個人資料</a>
+                <a href="{% url 'orders:order_list' %}" class="btn btn-link text-white">
+                    <i class="fas fa-list-alt mr-1"></i>我的訂單
+                </a>
                 <form action="{% url 'accounts:logout' %}" method="post" class="d-inline">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-link text-white">登出</button>

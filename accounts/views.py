@@ -59,7 +59,7 @@ def register(request):
                     profile.reg_address = reg_address
                     profile.save()
                     auth.login(request, user)
-                    return render("pages/frontpage.html",)
+                    return redirect("pages:frontpage")
         else:
             messages.error(request, "密碼與確認密碼不一致")
             return redirect("accounts:register")

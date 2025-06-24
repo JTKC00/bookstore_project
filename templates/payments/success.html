@@ -3,9 +3,74 @@
 {% block content %}
 <div class="container py-5">
   <div class="alert alert-success text-center">
+    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
     <h2>付款成功！</h2>
-    <p>感謝你的訂購，我們會盡快處理你的訂單。</p>
-    <a href="/" class="btn btn-primary mt-3">返回首頁</a>
+    
+    {% if message %}
+      <p class="lead">{{ message }}</p>
+    {% else %}
+      <p class="lead">感謝你的訂購，我們會盡快處理你的訂單。</p>
+    {% endif %}
+    
+    {% if order %}
+      <div class="card mt-4 mx-auto" style="max-width: 500px;">
+        <div class="card-header">
+          <h5 class="mb-0">訂單詳情</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-6 text-left">
+              <strong>訂單編號：</strong>
+            </div>
+            <div class="col-6 text-right">
+              #{{ order.id }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 text-left">
+              <strong>發票號碼：</strong>
+            </div>
+            <div class="col-6 text-right">
+              {{ order.invoice_no }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 text-left">
+              <strong>訂單金額：</strong>
+            </div>
+            <div class="col-6 text-right">
+              HK${{ order.total_amount }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 text-left">
+              <strong>付款狀態：</strong>
+            </div>
+            <div class="col-6 text-right">
+              <span class="badge badge-success">已付款</span>
+            </div>
+          </div>
+          {% if method %}
+          <div class="row">
+            <div class="col-6 text-left">
+              <strong>付款方式：</strong>
+            </div>
+            <div class="col-6 text-right">
+              {{ method }}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+    
+    <div class="mt-4">
+      <a href="/" class="btn btn-primary mr-2">返回首頁</a>
+      <a href="{% url 'orders:order_list' %}" class="btn btn-outline-secondary mr-2">我的訂單</a>
+      {% if order %}
+        <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-outline-primary">查看訂單詳情</a>
+      {% endif %}
+    </div>
   </div>
 </div>
 {% endblock %}

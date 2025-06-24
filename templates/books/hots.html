@@ -31,8 +31,8 @@
                 </h5>
               </div>
               <a href="{% url 'books:book' book.id %}">
-                {% if book.photo_large %}
-                  <img src="{{ book.photo_large.url }}" class="card-img-top mb-2" alt="{{ book.title }}">
+                {% if book.photo_small %}
+                  <img src="{{ book.photo_small.url }}" class="card-img-top mb-2" alt="{{ book.title }}">
                 {% else %}
                   <img src="{% static 'img/default_cover.jpg' %}" class="card-img-top mb-2" alt="無封面">
                 {% endif %}
