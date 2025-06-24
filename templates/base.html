@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{% static 'css/lightbox.min.css' %}"/> 
     <!-- custom -->
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    {% block extra_css %}{% endblock %}
 </head>
     <title>{% block title %}開心書店{% endblock %}</title>
 
@@ -47,9 +48,12 @@
 
 
   <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script> 
+  <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+  <script src="{% static 'js/infinite.min.js' %}"></script>
   <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script> 
   <script src="{% static 'js/main.js' %}"></script> 
   <script src="{% static 'js/lightbox.min.js' %}"></script>
+
   <script>
   document.addEventListener('DOMContentLoaded', function() {
     // 自動隱藏通知
@@ -135,5 +139,6 @@
   }
 </script>
 
+{% block extra_js %}{% endblock %}
 </body>
 </html>

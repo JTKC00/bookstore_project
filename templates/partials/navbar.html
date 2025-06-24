@@ -18,6 +18,9 @@
         <li {% if 'books/search' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
           <a class="nav-link" href="{% url 'books:search' %}">搜尋書籍</a>
         </li>
+        <li {% if 'books/fastapi-search' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
+          <a class="nav-link" href="{% url 'books:fastapi_search' %}">API 書籍搜尋</a>
+        </li>
         <li {% if 'about' in request.path %} class="nav-item active {% else %} class="nav-item {% endif %}">
           <a class="nav-link" href="/about">關於我們</a>
         </li>

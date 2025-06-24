@@ -1,0 +1,38 @@
+<!-- filepath: bookstore_project/templates/books/fastapi_search.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+  <h2>FastAPI 書籍搜尋</h2>
+  <form method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="輸入書名關鍵字" class="form-control" style="max-width:300px;display:inline-block;">
+    <button type="submit" class="btn btn-primary">搜尋</button>
+  </form>
+  <hr>
+  {% if error_message %}
+    <div class="alert alert-danger">{{ error_message }}</div>
+  {% elif results %}
+    <div class="alert alert-success">找到 {{ results|length }} 本書籍</div>
+    {% for book in results %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">{{ book.title }}</h5>
+          <p class="card-text">
+            <strong>作者：</strong>{{ book.author }}<br>
+            {% if book.publishedDate %}
+              <strong>出版日期：</strong>{{ book.publishedDate }}<br>
+            {% endif %}
+            {% if book.publisher %}
+              <strong>出版社：</strong>{{ book.publisher }}<br>
+            {% endif %}
+          </p>
+          {% if book.description %}
+            <p class="card-text">{{ book.description|truncatewords:30 }}</p>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  {% elif query %}
+    <p>沒有找到相關書籍。</p>
+  {% endif %}
+</div>
+{% endblock %}

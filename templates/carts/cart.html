@@ -88,14 +88,7 @@
     </table>
     
     <div class="container mt-4" align="center">
-<!-- carts/cart.html -->
-<form action="{% url 'orders:shipping' %}" method="GET">
-  <input type="hidden" name="shopcart_id" value="{{ shopcart.id }}">
-  <input type="hidden" name="total_quantity" value="{{ total_quantity }}">  
-  <input type="hidden" name="total_amount" value="{{ total_price }}">    
-  <button type="submit" class="btn btn-primary">前往郵寄資訊</button>
-</form>      
-      <!--<a href="{% url "orders:shipping" %}" class="btn btn-primary px-4" id="next-btn">下一步</a>-->
+      <a href="{% url 'orders:shipping' %}?shopcart_id={{ shopcart.id }}&total_amount={{ total_price }}&total_quantity={{ total_quantity }}" class="btn btn-primary px-4" id="next-btn">下一步</a>
     </div>
     
     <div class="mt-4">
@@ -113,4 +106,62 @@
   {% endif %}
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 處理增加數量按鈕
+    document.querySelectorAll('.increase-qty').forEach(button => {
+      button.addEventListener('click', function() {
+        const itemId = this.getAttribute('data-item-id');
+        const url = this.getAttribute('data-url') + '?action=increase';
+        updateQuantity(url, this);
+      });
+    });
+    
+    // 處理減少數量按鈕
+    document.querySelectorAll('.decrease-qty').forEach(button => {
+      button.addEventListener('click', function() {
+        const itemId = this.getAttribute('data-item-id');
+        const url = this.getAttribute('data-url') + '?action=decrease';
+        updateQuantity(url, this);
+      });
+    });
+    
+    // AJAX 請求函數
+    function updateQuantity(url, buttonElement) {
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+        
+        // 更新數量顯示
+        const qtyInput = buttonElement.closest('.input-group').querySelector('.item-qty');
+        qtyInput.value = data.quantity;
+        
+        // 更新小計
+        const row = buttonElement.closest('tr');
+        const priceCell = row.querySelector('td:nth-child(5)');
+        priceCell.textContent = '$' + data.sub_total;
+        
+        // 更新總計
+        document.getElementById('total-qty').textContent = data.total_quantity;
+        document.getElementById('total-amount').textContent = data.total_price;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('操作失敗，請重試。');
+      });
+    }
+  });
+</script>
 {% endblock %}

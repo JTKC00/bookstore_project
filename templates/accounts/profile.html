@@ -1,64 +1,65 @@
 {% extends "base.html" %}
-{% block title %} | Register {% endblock title %} 
+{% load humanize %}
+{% block title %} | Profile {% endblock title %} 
 <!-- <!DOCTYPE html> -->
 <!-- <html lang="zh-Hant"> -->
 {% block content %}
     <section id="showcase-inner" class="bg-light">
       <div class="container">
         <div class="card shadow-sm card-body">
-          <div class="row ">
+          <div class="row py-4">
             <div class="col-md-12 bg-primary text-center text-white">
-              <h1 class="display-4">User Dashboard</h1>
+              <h1 class="display-4">Hi {{user.username | title}}</h1>
               <p class="lead">Manage your account</p>
             </div>
           </div>
-                <form action="/accounts/profile/" method="POST">
+                <form action={% url "accounts:profile_edit" %} method="POST">
                     {% csrf_token %}
-                    <div class="row">
+                    <div class="row py-4">
                         <div class="col-md-6 mb-2">
                             <label for="first_name">姓氏</label>
-                            <input id="first_name" type="text" name="first_name" class="form-control" required />
+                            <input id="first_name" type="text" value={{user.first_name}} name="first_name" class="form-control" readonly/>
                         </div>
                         <div class="col-md-6 mb-2">
                             <label for="last_name">名字</label>
-                            <input id="last_name" type="text" name="last_name" class="form-control" required />
+                            <input id="last_name" type="text" name="last_name" value={{user.last_name}} class="form-control" readonly/>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-2">
                             <label for="email">電郵</label>
-                            <input id="email" type="email" name="email" class="form-control" required />
+                            <input id="email" type="email" name="email" value={{user.email}} class="form-control" required />
                         </div>
                         <div class="col-md-6 mb-2">
                             <label for="phone">電話</label>
-                            <input id="phone" type="phone" name="phone" class="form-control" required />
+                            <input id="phone" type="text" name="phone" value={{user.profile.phone}} class="form-control" required />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12 mb-2">
                             <label for="address">地址</label>
-                            <input id="address" type="text" name="reg_address" class="form-control" required />
+                            <input id="address" type="text" name="reg_address" value={{user.profile.reg_address}} class="form-control" required />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="catagory_id">興趣書類 (選填）</label>
-                            <select class="form-control" id="catagory_id" name="favour_category" required>
-                                <option></option>
-                                <option>文學</option>
-                                <option>社會科學</option>
-                                <option>商業財經</option>
-                                <option>飲食文化</option>
-                                <option>心理勵志</option>
-                                <option>其他</option>
+                            <label for="category_id">興趣書類</label>
+                            <select class="form-control" id="category_id" name="favour_category" required>
+                                <option value="">請選擇</option>
+                                <option value="文學" {% if user.profile.favour_category == "文學" %}selected{% endif %}>文學</option>
+                                <option value="社會科學" {% if user.profile.favour_category == "社會科學" %}selected{% endif %}>社會科學</option>
+                                <option value="商業財經" {% if user.profile.favour_category == "商業財經" %}selected{% endif %}>商業財經</option>
+                                <option value="飲食文化" {% if user.profile.favour_category == "飲食文化" %}selected{% endif %}>飲食文化</option>
+                                <option value="心理勵志" {% if user.profile.favour_category == "心理勵志" %}selected{% endif %}>心理勵志</option>
+                                <option value="其他" {% if user.profile.favour_category == "其他" %}selected{% endif %}>其他</option>
                             </select>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-3 mb-2"></div>
-                        <button type="change_info" class="btn btn-warning text-white fw-bold">  確認更改  </button>
+                        <button type="submit" name="action" value="profile_edit" class="btn btn-warning text-white fw-bold">  確認更改  </button>
                         <div class="col-md-4 mb-2"></div>
-                        <button type="reset_pass" class="btn btn-danger text-white fw-bold">  重設密碼  </button>
+                        <button type="submit" name="action" value="change_password" class="btn btn-danger text-white fw-bold">  重設密碼  </button>
  
                     </div>
                 </form>         
