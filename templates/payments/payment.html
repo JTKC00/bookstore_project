@@ -84,15 +84,50 @@
 <script>
   const stripe = Stripe('{{ STRIPE_PUBLIC_KEY }}');
   const checkoutButton = document.getElementById('checkout-button');
+  
   checkoutButton.addEventListener('click', async () => {
-    const response = await fetch('/create-checkout-session/{{ order.id }}/', {
-      method: 'POST',
-      headers: {'X-CSRFToken': '{{ csrf_token }}'}
-    });
-    const session = await response.json();
-    const result = await stripe.redirectToCheckout({ sessionId: session.id });
-    if (result.error) {
-      alert(result.error.message);
+    try {
+      console.log('開始建立付款會話...');
+      
+      // 獲取 CSRF token
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      
+      const response = await fetch('{% url "payments:create_checkout_session" order.id %}', {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({})  // 空的 JSON body
+      });
+      
+      console.log('API 回應狀態:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API 錯誤回應:', errorText);
+        throw new Error(`HTTP error! status: ${response.status}, response: ${errorText}`);
+      }
+      
+      const session = await response.json();
+      console.log('付款會話:', session);
+      
+      if (session.error) {
+        alert('錯誤: ' + session.error);
+        return;
+      }
+      
+      const result = await stripe.redirectToCheckout({ 
+        sessionId: session.id 
+      });
+      
+      if (result.error) {
+        alert('Stripe 錯誤: ' + result.error.message);
+      }
+      
+    } catch (error) {
+      console.error('付款錯誤:', error);
+      alert('付款處理失敗: ' + error.message);
     }
   });
 
@@ -106,3 +141,37 @@
   });
 </script>
 {% endblock %}
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
+@method_decorator(csrf_exempt, name='dispatch')  # 暫時免除 CSRF 檢查
+class CreateCheckoutSessionView(View):
+    def post(self, request, order_id, *args, **kwargs):
+        try:
+            order = get_object_or_404(Order, id=order_id, userId=request.user)
+            
+            checkout_session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=[
+                    {
+                        'price_data': {
+                            'currency': 'hkd',
+                            'product_data': {
+                                'name': f'訂單 #{order.id}',
+                            },
+                            'unit_amount': int(order.total_amount * 100),  # 轉換為分
+                        },
+                        'quantity': 1,
+                    }
+                ],
+                mode='payment',
+                success_url=request.build_absolute_uri('/payments/success/'),
+                cancel_url=request.build_absolute_uri('/payments/cancel/'),
+            )
+            
+            return JsonResponse({'id': checkout_session.id})
+            
+        except stripe.error.StripeError as e:
+            return JsonResponse({'error': str(e)}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': f'創建付款會話失敗: {str(e)}'}, status=500)

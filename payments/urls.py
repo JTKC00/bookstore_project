@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-
+from django.views.generic import TemplateView
 app_name = 'payments'
 
 urlpatterns = [
@@ -9,6 +9,6 @@ urlpatterns = [
     path('stripe-webhook/', views.stripe_webhook, name='stripe_webhook'),
     path('fps/', views.fps_payment, name='fps_payment'),
     path('paypal/', views.paypal_payment, name='paypal_payment'),
-    path('success/', views.payment_success, name='success'),
-    path('cancel/', views.payment_cancel, name='cancel'),
+    path('success/', TemplateView.as_view(template_name='payments/success.html'), name='success'),
+    path('cancel/', TemplateView.as_view(template_name='payments/cancel.html'), name='cancel'),
 ]
