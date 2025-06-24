@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Order, OrderItem
 from carts.models import ShopCart, CartItem
 from django.contrib import messages
-from django.contrib import messages
 from datetime import datetime
 
 
@@ -28,14 +27,35 @@ def shipping(request):
 
 
 def orderinfo(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "請先登入")
+        return redirect("accounts:login")
+
+    # Get all orders for this user
+    orders = Order.objects.filter(userId=request.user).order_by("-order_date")
+
+    # Get selected order (by invoice_no or order id)
+    selected_order = None
+    order_items = []
+    total_quantity = 0
+    total_amount = 0
+
+    order_id = request.GET.get("order_id")
+    if order_id:
+        selected_order = get_object_or_404(Order, id=order_id, userId=request.user)
+        order_items = OrderItem.objects.filter(orderid=selected_order)
+        total_quantity = sum(item.quantity for item in order_items)
+        total_amount = selected_order.total_amount
+
     return render(
         request,
         "orders/orderinfo.html",
         {
-            #            "shopcart": shopcart,
-            #            "cart_items": cart_items,
-            #            "total_quantity": total_quantity,
-            #            "total_amount": total_amount,
+            "orders": orders,
+            "selected_order": selected_order,
+            "order_items": order_items,
+            "total_quantity": total_quantity,
+            "total_amount": total_amount,
         },
     )
 
