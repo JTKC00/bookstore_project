@@ -35,7 +35,9 @@
           <div class="infinite-item">
             <div class="book-card book-card-fixed">
               {% if book.photo_large %}
-                <img src="{{ book.photo_small.url }}" alt="{{ book.title }}" class="book-image">
+                <a href="{% url 'books:book' book.id %}">
+                  <img src="{{ book.photo_small.url }}" alt="{{ book.title }}" class="book-image">
+                </a>
               {% else %}
                 <img src="{% static 'images/default_book.jpg' %}" alt="Default Image" class="book-image">
               {% endif %}

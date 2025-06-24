@@ -20,7 +20,7 @@
                 {% if book.photo_small %}
                   <img src="{{ book.photo_small.url }}" class="img-thumbnail book-cover-sm mt-2" alt="{{ book.title }} Small Cover">
                 {% else %}
-                  <img src="{% static 'img/default_cover_small.jpg' %}" class="img-thumbnail book-cover-sm mt-2" alt="Default Small Book Cover">
+                  <img src="{% static 'img/default_cover.jpg' %}" class="img-thumbnail book-cover-sm mt-2" alt="Default Small Book Cover">
                 {% endif %}
               </div>
             </div>

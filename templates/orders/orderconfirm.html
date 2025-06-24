@@ -39,8 +39,7 @@
                     </div>
                 </div>   
 
-                <form action="{% url 'payments:payment' order.id %}" method="POST">
-                    {% csrf_token %}
+                <form action="{% url 'payments:payment' order.id %}" method="get">
                     <div class="row">
                         <div class="col-md-6 mb-2">
                             <label for="first_name">姓氏</label>
@@ -102,12 +101,12 @@
         </td>
       <!-- Product Details -->
       <td class="align-middle">
-        <strong>{{item.bookId.title}}</strong>
+        <strong>{{item.bookid.title}}</strong>
         <p class="mb-0 text-muted small">
-          {{item.bookId.author}}
+          {{item.bookid.author}}
           <br>
-          <br>{{item.bookId.details}}
-          <br>{{item.bookId.category}}
+          <br>{{item.bookid.introduction}}
+          <br>{{item.bookid.category}}
           </p>
       </td>
       <td class="align-middle text-center">
@@ -123,7 +122,7 @@
       </td>
       <!-- Price -->
       <td class="align-middle text-center">
-        {{item.sub_total}}
+        {{item.CartID.sub_total}}
       </td>
     </tr>
     {% endfor %}
