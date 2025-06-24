@@ -24,14 +24,14 @@ urlpatterns = [
     path('', include('pages.urls', namespace='pages')),
     path('books/', include('books.urls')),
     path('accounts/', include('accounts.urls')),
-    path('carts/', include('carts.urls')),
+    path('carts/', include('carts.urls',namespace='carts')),
     path('orders/', include('orders.urls')),
     path('payments/', include('payments.urls')),
     path('notifications/', include('notifications.urls')),
     path('inquiries/', include('inquiries.urls')),
     path('admin/', admin.site.urls),
 ] + debug_toolbar_urls()
-# 多人用要先放
+# 多人用要先放  
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

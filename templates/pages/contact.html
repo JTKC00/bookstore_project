@@ -7,6 +7,7 @@
     </h1>
     <div class="row justify-content-center">
       <div class="col-lg-7">
+        <!-- 現有的聯絡資訊卡 -->
         <div class="card shadow-lg contact-card mb-5">
           <div class="card-body">
             <h4 class="card-title mb-4 text-primary" style="font-weight:bold;">
@@ -35,6 +36,68 @@
             </ul>
           </div>
         </div>
+        
+        <!-- 添加查詢表單 -->
+        <div class="card shadow-lg contact-card mb-5">
+          <div class="card-body">
+            <h4 class="card-title mb-4 text-primary" style="font-weight:bold;">
+              線上查詢表單
+            </h4>
+            
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+            {% endif %}
+
+            <form method="post" action="/inquiries/inquiry/" novalidate>
+              {% csrf_token %}
+              
+              {% if user.is_authenticated %}
+                <div class="alert alert-info mb-3">
+                  您已登入為 <b>{{ user.username }}</b>，我們將使用您的聯絡資料。
+                </div>
+              {% endif %}
+              
+              <!-- 非登入用戶的姓名和電郵欄位 -->
+              {% if not user.is_authenticated %}
+                
+                <div class="mb-3">
+                  <label for="id_email" class="form-label">電郵</label>
+                  <input type="email" name="email" class="form-control" id="id_email" required>
+                </div>
+
+                <div class="mb-3">
+                  <label for="id_last_name" class="form-label">姓氏</label>
+                  <input type="text" name="last_name" class="form-control" id="id_last_name" required>
+                </div>
+
+                <div class="mb-3">
+                  <label for="id_first_name" class="form-label">名字</label>
+                  <input type="text" name="first_name" class="form-control" id="id_first_name" required>
+                </div>
+              {% endif %}
+              
+              <!-- 所有用戶都要填寫的欄位 -->
+              <div class="mb-3">
+                <label for="id_phone" class="form-label">聯絡電話 (選填)</label>
+                <input type="tel" name="phone" class="form-control" id="id_phone">
+              </div>
+              
+              <div class="mb-3">
+                <label for="id_message" class="form-label">查詢內容</label>
+                <textarea name="message" class="form-control" id="id_message" rows="5" required></textarea>
+              </div>
+              
+              <button type="submit" class="btn btn-primary">送出查詢</button>
+              <button type="reset" class="btn btn-secondary">重設</button>
+            </form>
+          </div>
+        </div>
+        
         <div class="text-center">
           <a href="{% url 'pages:about' %}" class="btn btn-contact btn-lg">
             <span style="font-size:1.2em;vertical-align:-2px;">📚</span> 關於我們
@@ -45,6 +108,14 @@
   </div>
 </div>
 
-
+<!-- 添加 JavaScript 防止重複提交 -->
+<script>
+document.querySelector('form').addEventListener('submit', function() {
+    // 禁用提交按鈕
+    const submitBtn = document.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '提交中...';
+});
+</script>
 {% endblock %}
 

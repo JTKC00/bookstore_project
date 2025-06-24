@@ -3,11 +3,11 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from books.models import Book
 
-# Create your models here.
+
 class ShopCart(models.Model):
     datetime = models.DateTimeField(default=datetime.now, blank=True)
     userId = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True)
-    
+
 
 class CartItem(models.Model):
     bookId = models.ForeignKey(Book, on_delete=models.DO_NOTHING)

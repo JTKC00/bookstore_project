@@ -32,7 +32,7 @@
     </div>
     <hr class="my-4">
     <!-- 回到頂部按鈕 -->
-    <div class="text-center mb-3">
+    <div class="text-center mb-3 d-flex justify-content-center">
       <button id="back-to-top" class="btn btn-backtotop" title="回到頂部">
         <span style="font-size:1.2em;">⬆️</span> 回到頂部
       </button>
@@ -42,13 +42,22 @@
     </div>
   </div>
 </footer>
-
-
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  const btn = document.getElementById("back-to-top");
-  btn.addEventListener("click", function() {
-    window.scrollTo({top: 0, behavior: 'smooth'});
+document.addEventListener('DOMContentLoaded', function() {
+  // 顯示/隱藏按鈕
+  var btn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 200) {
+      btn.style.display = 'block';
+    } else {
+      btn.style.display = 'none';
+    }
+  });
+
+  // 點擊滾動到頂部
+  btn.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 });
 </script>
+

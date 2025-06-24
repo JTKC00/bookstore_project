@@ -9,11 +9,19 @@
         </div>
         <div class="topbar-right d-flex align-items-center">
             <a href="/" class="btn btn-link text-white">首頁</a>
-            <a href="/carts/cart_item" class="btn btn-link text-white">
-                <span class="fa fa-shopping-cart"></span> 購物車
+
+
             </a>
+            {% if user.is_authenticated %}
+                <span class="text-white">歡迎, {{ user.username }}</span>
+                <a href="/accounts/profile/" class="btn btn-link text-white">個人資料</a>
+                <a href="/accounts/logout/" class="btn btn-link text-white">登出</a>
+                <a href="/carts/cart/" class="btn btn-link text-white"><span class="fa fa-shopping-cart"></span> 購物車</a>
+            {% else %}
             <a href="/accounts/register/" class="btn btn-link text-white">註冊</a>
             <a href="/accounts/login/" class="btn btn-link text-white">登入</a>
+            <a href="/accounts/login/" class="btn btn-link text-white"><span class="fa fa-shopping-cart"></span> 購物車</a>
+            {% endif %}
         </div>
     </div>
 </div>
