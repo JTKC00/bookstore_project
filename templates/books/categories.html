@@ -42,7 +42,7 @@
               <div class="card-body d-flex flex-column align-items-center">
                 <a href="{% url 'books:book' book.id %}">
                   {% if book.photo_large %}
-                  <img src="{{ book.photo_large.url }}" class="card-img-top mb-3" alt="{{ book.title }}">
+                  <img src="{{ book.photo_small.url }}" class="card-img-top mb-3" alt="{{ book.title }}">
                   {% else %}
                   <img src="{% static 'img/default_cover.jpg' %}" class="card-img-top mb-3" alt="無封面">
                   {% endif %}

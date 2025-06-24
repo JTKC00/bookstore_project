@@ -18,5 +18,6 @@ class CartItemAdmin(admin.ModelAdmin):
     list_display = ('id','shopCartId', 'bookId', 'quantity', 'unit_price', 'sub_total')
     search_fields = ('id','bookId__title', '')
     list_per_page = 20
+
 admin.site.register(ShopCart, CartAdmin)
 admin.site.register(CartItem, CartItemAdmin)

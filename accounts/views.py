@@ -183,3 +183,9 @@ def change_password(request):
                 messages.success(request, "密碼更改成功！")
                 return redirect('pages:frontpage')         
     return render(request, 'accounts/change_password.html')
+
+def logout(request):
+    if request.method == 'POST':
+        auth.logout(request)
+        messages.success(request, "登出成功，歡迎再次光臨！")
+    return redirect("pages:frontpage")

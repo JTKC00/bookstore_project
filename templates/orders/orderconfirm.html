@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load humanize %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +22,7 @@
                         <p class="text-right">訂單日期 : </p>
                     </div>
                     <div class="col-md-2 mb-2">
-                        <p class="text-left"> {{order.order_date}}</p>
+                        <p class="text-left"> {{order.order_date | date}}</p>
                     </div>
 
                 </div>   
@@ -38,8 +39,7 @@
                     </div>
                 </div>   
 
-                <form action={% url "payments:payment" %} method="POST">
-                    {% csrf_token %}
+                <form action="{% url 'payments:payment' order.id %}" method="get">
                     <div class="row">
                         <div class="col-md-6 mb-2">
                             <label for="first_name">姓氏</label>
@@ -94,19 +94,19 @@
       <!-- Product Photo -->
         <td class="align-middle text-center">
             <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
-                <a href="{{item.bookId.photo_large.url}}" data-lightbox="home-images">
-                  <img src="{{item.bookId.photo_small.url}}" class="img-thumbnail" alt="Product 1" style="max-width: 150px;">
+                <a href="{{item.bookid.photo_large.url}}" data-lightbox="home-images">
+                  <img src="{{item.bookid.photo_small.url}}" class="img-thumbnail" alt="Product 1" style="max-width: 150px;">
                 </a>
             </div>
         </td>
       <!-- Product Details -->
       <td class="align-middle">
-        <strong>{{item.bookId.title}}</strong>
+        <strong>{{item.bookid.title}}</strong>
         <p class="mb-0 text-muted small">
-          {{item.bookId.author}}
+          {{item.bookid.author}}
           <br>
-          <br>{{item.bookId.details}}
-          <br>{{item.bookId.category}}
+          <br>{{item.bookid.introduction}}
+          <br>{{item.bookid.category}}
           </p>
       </td>
       <td class="align-middle text-center">
@@ -122,7 +122,7 @@
       </td>
       <!-- Price -->
       <td class="align-middle text-center">
-        {{item.sub_total}}
+        {{item.CartID.sub_total}}
       </td>
     </tr>
     {% endfor %}
@@ -131,8 +131,8 @@
     <tfoot>
     <tr>
       <td colspan="3"></td>
-      <td class="text-left align-middle fw-bold">總數量：<span id="total-qty">3</span></td>
-      <td class="text-left align-middle unfold"><span id="total-amount" unfold>總金額：{{total_amount}}}</span></td>
+      <td class="text-left align-middle fw-bold">總數量：<span id="total-qty">{{ total_quantity }}</span></td>
+      <td class="text-left align-middle unfold"><span id="total-amount" unfold>總金額：{{total_amount}}</span></td>
 
       </td>
     </tr>
@@ -168,4 +168,4 @@
   </div>
 </section>       
 </div>
-{% endblock %}    
+{% endblock %}
