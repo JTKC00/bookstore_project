@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load humanize %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>訂單資料</title>
+</head>
+
+<table class="table align-middle">
+    <thead>
+      <tr>
+        <th style="width: 150px; text-align: center;">商品</th>
+        <th style="min-width: 220px;">商品簡介</th>
+        <th style="width: 160px; text-align: center;">單價</th>
+        <th style="width: 160px; text-align: center;">數量</th>
+        <th style="width: 160px; text-align: center;">價錢</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <!-- Product Photo -->
+        <td class="align-middle text-center">
+
+        </td>
+        <!-- Product Details -->
+        <td class="align-middle">
+          <strong>3x3 EYES鬼籍之闇的契約者. 8</strong>
+          <p class="mb-0 text-muted small">高田裕三. 朱目彤
+            <br>玉皇朝(國際)有限公司
+            <br>漫畫
+            <br>19 厘米 無頁碼 全插圖
+          </p>
+        </td>
+        <td class="align-middle text-center">
+          $19.99
+        </td>
+        <!-- Quantity Controls -->
+        <td class="align-middle text-center">
+          <div class="input-group justify-content-center">
+
+            <input type="text" class="form-control text-center" value="1" style="max-width: 40px;" disabled>
+
+          </div>
+        </td>
+        <!-- Price -->
+        <td class="align-middle text-center">
+          $19.99
+        </td>
+      </tr>
+      <tr>
+        <td class="align-middle text-center">
+          <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+            <a href="book_list/1/9789620455452_large.jpg" data-lightbox="home-images">
+              <img src="book_list/1/9789620455452_small.jpg.webp" class="img-thumbnail" alt="Product 2"
+                style="max-width: 150px;">
+            </a>
+          </div>
+        </td>
+        <td class="align-middle">
+          <strong>一分鐘現代藝術辭典. 1820-1989</strong>
+          <p class="mb-0 text-muted small">李仕泉 劉亮
+            <br>香港高色調出版有限公司
+            <br>17 厘米 645 頁 插圖
+            <br>藝術
+          </p>
+        </td>
+        <td class="align-middle text-center">
+          $39.98
+        </td>
+        <td class="align-middle text-center">
+          <div class="input-group justify-content-center">
+            <input type="text" class="form-control text-center" value="2" style="max-width: 40px;" disabled>
+          </div>
+        </td>
+        <td class="align-middle text-center">
+          $39.98
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3"></td>
+        <td class="text-left align-middle fw-bold">總數量：<span id="total-qty">3</span></td>
+        <td class="text-left align-middle unfold"><span id="total-amount" unfold>總金額：$59.97</span>
+        </td>
+
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+
+<section id="register" class="bg-light py-4">
+  <div class="container bg-light">
+        <div class="card shadow-sm card-body">
+
+                <h2 class="mb-4 bg-primary text-center text-white">確認訂單</h2>
+
+                <div class="row">
+                    <div class="col-md-8 mb-2">
+                    </div>   
+             
+                    <div class="col-md-2 mb-2">
+                        <p class="text-right">訂單日期 : </p>
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <p class="text-left"> {{order.order_date | date}}</p>
+                    </div>
+
+                </div>   
+
+                <div class="row">
+                    <div class="col-md-8 mb-2">
+<!----                        <p class="text-right">訂單日期 : </p>. -->
+                    </div>                    
+                    <div class="col-md-2 mb-2">
+                        <p class="text-right">訂單編號 : </p>
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <p class="text-left"> {{order.invoice_no}}</p>
+                    </div>
+                </div>   
+
+                <form action={% url "payments:payment" %} method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label for="first_name">姓氏</label>
+                            <input id="first_name" type="text" name="first_name" class="form-control" value="{{order.userId.last_name}}" disabled />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label for="last_name">名字</label>
+                            <input id="last_name" type="text" name="last_name" class="form-control" Value="{{order.userId.first_name}}" disabled />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label for="username">用戶名稱</label>
+                            <input id="username" type="text" name="username" class="form-control" Value="{{order.userId}}" disabled />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label for="email">電郵</label>
+                            <input id="email" type="email" name="email" class="form-control" Value="{{order.userId.email}}" disabled />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label for="phone">收件人名稱</label>
+                            <input id="receipient" type="text" name="receipient" class="form-control" value="{{order.receipient}}" disabled />
+                        </div>                        
+                        <div class="col-md-6 mb-2">
+                            <label for="phone">收件人聯絡電話</label>
+                            <input id="receipient_phone" type="phone" name="receipient_phone" class="form-control" value="{{order.receipient_phone}}" disabled />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-2">
+                            <label for="address">郵寄地址 </label>
+                            <input id="address" type="text" name="address" class="form-control" value="{{order.shipping_address}}" disabled/>
+                        </div>
+                    </div>
+
+
+<table class="table align-middle">
+  <thead>
+    <tr>
+      <th style="width: 150px; text-align: center;">商品</th>
+      <th style="min-width: 220px;">商品簡介</th>
+      <th style="width: 160px; text-align: center;">單價</th>      
+      <th style="width: 160px; text-align: center;">數量</th>
+      <th style="width: 160px; text-align: center;">價錢</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in cart_items %}
+    <tr>
+      <!-- Product Photo -->
+        <td class="align-middle text-center">
+            <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+                <a href="{{item.bookId.photo_large.url}}" data-lightbox="home-images">
+                  <img src="{{item.bookId.photo_small.url}}" class="img-thumbnail" alt="Product 1" style="max-width: 150px;">
+                </a>
+            </div>
+        </td>
+      <!-- Product Details -->
+      <td class="align-middle">
+        <strong>{{item.bookId.title}}</strong>
+        <p class="mb-0 text-muted small">
+          {{item.bookId.author}}
+          <br>
+          <br>{{item.bookId.details}}
+          <br>{{item.bookId.category}}
+          </p>
+      </td>
+      <td class="align-middle text-center">
+        {{item.unit_price}}
+      </td>      
+      <!-- Quantity Controls -->
+      <td class="align-middle text-center">
+        <div class="input-group justify-content-center">
+          
+          <input type="text" class="form-control text-center" value="1" style="max-width: 40px;" disabled>
+          
+        </div>
+      </td>
+      <!-- Price -->
+      <td class="align-middle text-center">
+        {{item.sub_total}}
+      </td>
+    </tr>
+    {% endfor %}
+
+  </tbody>
+    <tfoot>
+    <tr>
+      <td colspan="3"></td>
+      <td class="text-left align-middle fw-bold">總數量：<span id="total-qty">3</span></td>
+      <td class="text-left align-middle unfold"><span id="total-amount" unfold>總金額：{{total_amount}}</span></td>
+
+      </td>
+    </tr>
+  </tfoot>
+</table>    
+
+<br>
+<br>
+<br>
+<br>
+
+
+                    <div class="row">
+                        <div class="col-md-3 mb-2"></div>
+                        <button type="button" class="btn btn-danger text-white fw-bold" value="{% url "orders:shipping" %} " >    上一頁      </button>
+
+                        <div class="col-md-4 mt-2"></div>
+                        <input type="hidden" name="shopcart_id" value="{{ shopcart.id }}">
+                        <input type="hidden" name="total_amount" value="{{ total_amount }}">  
+                        <button type="submit" class="btn btn-warning text-white fw-bold" value="send">    準確下單    </button>
+                    </div>
+                </form>
+<br>
+<br>
+
+
+        即將確認...
+        <div class ="progress">
+            <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" style="width: 75%">75%</div>
+        </div>
+
+        </div>
+  </div>
+</section>       
+</div>
+{% endblock %}    

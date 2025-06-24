@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from orders.models import Order, OrderItem
 from datetime import datetime
 from carts.models import ShopCart, CartItem
+from django.contrib import messages
 
 
 # Create your views here.
@@ -43,6 +44,19 @@ def shipping(request):
 #    )
 
 
+def orderinfo(request):
+    return render(
+        request,
+        "orders/orderinfo.html",
+        {
+            #            "shopcart": shopcart,
+            #            "cart_items": cart_items,
+            #            "total_quantity": total_quantity,
+            #            "total_amount": total_amount,
+        },
+    )
+
+
 def orderconfirm(request):
     if request.method == "POST":
         shopcart_id = request.POST.get("shopcart_id")
@@ -60,6 +74,7 @@ def orderconfirm(request):
         if order:
             # If order exists, just show the confirmation page with existing order and items
             order_items = OrderItem.objects.filter(orderid=order)
+            messages.warning(request, "The order is already made")
             return render(
                 request,
                 "orders/orderconfirm.html",
