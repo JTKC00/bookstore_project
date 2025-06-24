@@ -46,20 +46,32 @@ class CreateCheckoutSessionView(View):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
 
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+import stripe
+
 @csrf_exempt
 def stripe_webhook(request):
-    payload = request.body
-    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
-    try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
-        )
-    except Exception:
-        return HttpResponse(status=400)
-    if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
-        # TODO: 根據 session 內容更新訂單狀態
-    return HttpResponse(status=200)
+    if request.method == 'POST':
+        payload = request.body
+        sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+        endpoint_secret = 'your_signing_secret'  # 從 Stripe Dashboard 獲取
+
+        try:
+            event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+        except ValueError as e:
+            return HttpResponse(f"Error: {str(e)}", status=400)
+        except stripe.error.SignatureVerificationError as e:
+            return HttpResponse(f"Error: {str(e)}", status=400)
+
+        if event['type'] == 'charge.succeeded':
+            print(f"Received charge.succeeded event: {event['data']['object']['id']}")
+            return HttpResponse("Webhook received", status=200)
+
+        return HttpResponse("Unhandled event", status=200)
+    elif request.method == 'GET':
+        return HttpResponse("Webhook endpoint is active", status=200)
+    return HttpResponse("Method not allowed", status=405)
 
 def fps_payment(request):
     if request.method == "POST":

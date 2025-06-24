@@ -122,11 +122,65 @@ def hots(request):
 def fastapi_search(request):
     results = []
     query = request.GET.get('q', '')
+    error_message = None
+    
     if query:
         try:
-            resp = requests.get('http://localhost:8001/search', params={'title': query})
+            # 確保正確的 API endpoint 和參數
+            resp = requests.get(
+                'http://localhost:8001/search', 
+                params={'title': query},
+                timeout=15,  # 增加超時時間
+                headers={'Content-Type': 'application/json'}  # 添加標頭
+            )
+            print(f"請求 URL: {resp.url}")  # 顯示完整請求 URL
+            print(f"FastAPI 回應狀態: {resp.status_code}")
+            print(f"FastAPI 回應內容: {resp.text}")
+            
             if resp.status_code == 200:
-                results = resp.json().get('books', [])
+                try:
+                    data = resp.json()
+                    print(f"解析後的 JSON: {data}")
+                    
+                    # 根據實際回應格式處理資料
+                    raw_books = []
+                    if 'google_books' in data:
+                        raw_books = data['google_books']
+                    elif 'books' in data:
+                        raw_books = data['books']
+                    elif isinstance(data, list):
+                        raw_books = data
+                    else:
+                        raw_books = [data]
+                    
+                    # 格式化書籍資料以統一格式
+                    results = []
+                    for book in raw_books:
+                        formatted_book = {
+                            'title': book.get('title', '無標題'),
+                            'author': ', '.join(book.get('authors', ['未知作者'])),  # 將 authors 陣列轉為字串
+                            'publishedDate': book.get('publishedDate', ''),
+                            'publisher': book.get('publisher', ''),
+                            'description': book.get('description', ''),
+                        }
+                        results.append(formatted_book)
+                        
+                    if not results:
+                        error_message = "沒有找到相關書籍"
+                except ValueError as e:
+                    error_message = f"無法解析 JSON 回應: {e}"
+            else:
+                error_message = f"API 回應錯誤: {resp.status_code} - {resp.text}"
+                
+        except requests.exceptions.ConnectionError as e:
+            error_message = f"無法連接到 FastAPI 服務 (http://localhost:8001)，請確認服務是否已啟動。錯誤: {e}"
+        except requests.exceptions.Timeout:
+            error_message = "請求超時（15秒），請稍後再試"
         except Exception as e:
-            results = [{'title': f'查詢失敗: {e}'}]
-    return render(request, 'books/fastapi_search.html', {'results': results, 'query': query})
+            error_message = f"查詢失敗: {type(e).__name__}: {str(e)}"
+            
+    return render(request, 'books/fastapi_search.html', {
+        'results': results, 
+        'query': query,
+        'error_message': error_message
+    })

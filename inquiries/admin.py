@@ -1,7 +1,8 @@
 from django.contrib import admin
 from .models import ContactMessage
 
-@admin.register(ContactMessage)
+@admin.register(ContactMessage) 
+#等於admin.site.register(ContactMessage, ContactMessageAdmin)
 class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ('get_name', 'email', 'created_at', 'user')
     list_filter = ('created_at', 'user')
