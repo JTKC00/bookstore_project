@@ -19,7 +19,14 @@ import_books.py
 index.csv
 CART_FIX_SUMMARY.md
 test_cart_fix.py
-requirements.txt
+ORDER_CANCEL_SUMMARY.md
+test_cart_debug.py
+CART_FIX_REPORT.md
+fix_cart_issues.py
+test_cart_sync.py
+CART_SYNC_FIX_REPORT.md
+debug_orderconfirm.py
+ORDERCONFIRM_FIX_REPORT.md
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.

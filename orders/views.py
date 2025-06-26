@@ -49,27 +49,65 @@ def orderconfirm(request):
         ).first()
         
         if pending_order:
-            # 檢查該訂單的商品是否與當前購物車一致
+            # 當存在未付款訂單時，需要檢查購物車是否有變更
             order_items = OrderItem.objects.filter(orderid=pending_order)
-            cart_items_ids = set(cart_items.values_list('id', flat=True))
-            order_cart_ids = set(order_items.values_list('CartID__id', flat=True))
+            cart_items_current = shopcart.cartitem_set.filter(is_ordered=False)
             
-            # 如果訂單商品與購物車商品一致，則顯示現有訂單
-            if cart_items_ids == order_cart_ids and cart_items.exists():
-                return render(
-                    request,
-                    "orders/orderconfirm.html",
-                    {
-                        "order": pending_order,
-                        "cart_items": order_items,
-                        "total_quantity": total_quantity,
-                        "total_amount": total_amount,
-                        "shopcart": shopcart,
-                    },
-                )
+            # 檢查購物車是否有變更（數量或商品）
+            needs_update = False
+            
+            # 重新計算當前購物車的總計
+            current_total_quantity = sum(item.quantity for item in cart_items_current)
+            current_total_amount = sum(item.sub_total for item in cart_items_current)
+            
+            # 檢查商品數量是否不同
+            if cart_items_current.count() != order_items.count():
+                needs_update = True
             else:
-                # 如果購物車已改變，刪除舊訂單重新創建
-                pending_order.delete()
+                # 檢查每個商品的數量是否變更
+                for cart_item in cart_items_current:
+                    corresponding_order_item = order_items.filter(CartID=cart_item).first()
+                    if not corresponding_order_item or corresponding_order_item.quantity != cart_item.quantity:
+                        needs_update = True
+                        break
+            
+            if needs_update:
+                print(f"[DEBUG] 購物車已變更，更新訂單 {pending_order.id}")
+                
+                # 刪除舊的訂單項目
+                order_items.delete()
+                
+                # 更新訂單總計
+                pending_order.total_amount = current_total_amount
+                pending_order.save()
+                
+                # 重新創建訂單項目
+                for item in cart_items_current:
+                    OrderItem.objects.create(
+                        bookid=item.bookId,
+                        CartID=item,
+                        orderid=pending_order,
+                        quantity=item.quantity,
+                        unit_price=item.unit_price,
+                        subTotal=item.quantity * item.unit_price,
+                    )
+                
+                print(f"[DEBUG] 訂單 {pending_order.id} 已更新，新總額: {current_total_amount}")
+            
+            # 重新獲取更新後的訂單項目
+            updated_order_items = OrderItem.objects.filter(orderid=pending_order)
+            
+            return render(
+                request,
+                "orders/orderconfirm.html",
+                {
+                    "order": pending_order,
+                    "cart_items": cart_items_current,  # 使用最新的購物車數據
+                    "total_quantity": current_total_quantity,
+                    "total_amount": current_total_amount,
+                    "shopcart": shopcart,
+                },
+            )
 
         # 在創建訂單前檢查所有商品庫存
         stock_errors = []
@@ -189,3 +227,96 @@ def order_list(request):
     return render(request, 'orders/order_list.html', {
         'orders': page_obj,
     })
+
+
+@login_required
+def cancel_order(request):
+    """取消訂單處理
+    
+    用於用戶在訂單確認頁面取消訂單。不刪除購物車，
+    但會清除 OrderItem 記錄，並將訂單狀態標記為已取消。
+    """
+    shopcart_id = request.GET.get("shopcart_id")
+    
+    if not shopcart_id:
+        messages.error(request, "無效的請求，缺少購物車ID。")
+        return redirect("carts:cart")
+    
+    try:
+        # 獲取購物車
+        shopcart = get_object_or_404(ShopCart, id=shopcart_id, userId=request.user)
+        
+        # 檢查是否有處於 PENDI 狀態的相關訂單
+        pending_order = Order.objects.filter(
+            shopCartId=shopcart, 
+            userId=request.user,
+            payment_status="PENDI"
+        ).first()
+        
+        if pending_order:
+            # 有未完成的訂單，先記錄訂單號
+            order_id = pending_order.id
+            
+            # 刪除相關的 OrderItem 記錄
+            OrderItem.objects.filter(orderid=pending_order).delete()
+            
+            # 可選：刪除訂單本身或標記為已取消
+            pending_order.delete()
+            # 或者標記為已取消:
+            # pending_order.payment_status = "CANC"
+            # pending_order.save()
+            
+            messages.success(request, f"訂單 #{order_id} 已成功取消，您可以繼續購物或調整購物車。")
+        else:
+            messages.info(request, "未找到待處理的訂單。")
+    
+    except Exception as e:
+        messages.error(request, f"取消訂單時發生錯誤: {str(e)}")
+    
+    # 重定向到購物車頁面
+    return redirect("carts:cart")
+
+
+@login_required
+def cancel_order_by_id(request, order_id):
+    """透過訂單ID取消訂單
+    
+    用於用戶在訂單列表或訂單詳情頁面取消訂單。
+    只有處於待付款(PENDI)狀態的訂單可以被取消。
+    """
+    try:
+        # 獲取訂單並確認是該用戶的訂單
+        order = get_object_or_404(Order, id=order_id, userId=request.user)
+        
+        # 檢查訂單狀態是否為待付款
+        if order.payment_status != "PENDI":
+            messages.error(request, "只能取消待付款的訂單。")
+            return redirect("orders:order_detail", order_id=order_id)
+        
+        # 記錄該訂單的購物車ID，以便返回時可以使用
+        shopcart_id = order.shopCartId.id if order.shopCartId else None
+        
+        # 刪除相關的OrderItem記錄
+        OrderItem.objects.filter(orderid=order).delete()
+        
+        # 可選：保留訂單但標記為已取消
+        # order.payment_status = "CANC"
+        # order.save()
+        
+        # 或完全刪除訂單
+        order.delete()
+        
+        messages.success(request, f"訂單 #{order_id} 已成功取消。")
+        
+        # 確認從哪裡返回
+        referer = request.META.get('HTTP_REFERER', '')
+        if 'detail' in referer:
+            # 如果是從訂單詳情頁面來的，則返回訂單列表
+            return redirect("orders:order_list")
+        else:
+            # 否則返回原頁面（大多是訂單列表）
+            return redirect("orders:order_list")
+            
+    except Exception as e:
+        messages.error(request, f"取消訂單時發生錯誤: {str(e)}")
+        return redirect("orders:order_list")

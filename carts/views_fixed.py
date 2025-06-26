@@ -178,39 +178,12 @@ def update_quantity(request, item_id):
 
     cart_item.sub_total = cart_item.unit_price * cart_item.quantity
     cart_item.save()
-    
-    print(f"[DEBUG] 購物車項目更新：{book.title} 數量 {cart_item.quantity}, 小計 {cart_item.sub_total}")
 
     # 重新計算購物車總計
     shopcart = cart_item.shopCartId
     cart_items = shopcart.cartitem_set.filter(is_ordered=False)
     total_price = sum(item.sub_total for item in cart_items)
     total_quantity = sum(item.quantity for item in cart_items)
-    
-    # 檢查是否有相關的未付款訂單需要更新
-    from orders.models import Order, OrderItem
-    pending_orders = Order.objects.filter(
-        shopCartId=shopcart,
-        userId=request.user,
-        payment_status="PENDI"
-    )
-    
-    for order in pending_orders:
-        # 更新訂單總計
-        order.total_amount = total_price
-        order.save()
-        
-        # 更新對應的訂單項目
-        order_item = OrderItem.objects.filter(
-            orderid=order,
-            CartID=cart_item
-        ).first()
-        
-        if order_item:
-            order_item.quantity = cart_item.quantity
-            order_item.subTotal = cart_item.sub_total
-            order_item.save()
-            print(f"[DEBUG] 同步更新訂單項目：{order_item.bookid.title} 數量 {order_item.quantity}")
 
     return JsonResponse(
         {
@@ -236,36 +209,6 @@ def remove_item(request, item_id):
         return redirect("carts:cart")
 
     item_name = cart_item.bookId.title
-    shopcart = cart_item.shopCartId
-    
-    # 在刪除購物車項目前，先處理相關的訂單項目
-    from orders.models import Order, OrderItem
-    pending_orders = Order.objects.filter(
-        shopCartId=shopcart,
-        userId=request.user,
-        payment_status="PENDI"
-    )
-    
-    for order in pending_orders:
-        # 刪除對應的訂單項目
-        order_items_to_delete = OrderItem.objects.filter(
-            orderid=order,
-            CartID=cart_item
-        )
-        deleted_count = order_items_to_delete.count()
-        order_items_to_delete.delete()
-        
-        if deleted_count > 0:
-            print(f"[DEBUG] 從訂單 {order.id} 中刪除了 {deleted_count} 個項目")
-            
-            # 重新計算訂單總計
-            remaining_items = shopcart.cartitem_set.filter(is_ordered=False).exclude(id=cart_item.id)
-            new_total = sum(item.sub_total for item in remaining_items)
-            order.total_amount = new_total
-            order.save()
-            print(f"[DEBUG] 更新訂單 {order.id} 總金額為 {new_total}")
-    
-    # 刪除購物車項目
     cart_item.delete()
     messages.success(request, f"{item_name} 已從購物車中移除")
 

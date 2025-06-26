@@ -36,7 +36,7 @@ def send_payment_success_email(order, payment_method):
 您可以在此查看訂單詳情：http://localhost:8000{order_detail_url}
 
 謝謝！
-心靈書店
+開心書店
 """
     
     print(f"[DEBUG] 準備發送付款成功郵件給 {recipient_email}")
@@ -112,15 +112,23 @@ Your Company
     )
     
     try:
+        # 檢查郵件設置
+        if not hasattr(settings, 'DEFAULT_FROM_EMAIL') or not settings.DEFAULT_FROM_EMAIL:
+            from_email = 'noreply@bookstore.com'
+        else:
+            from_email = settings.DEFAULT_FROM_EMAIL
+            
         send_mail(
             subject,
             message,
-            settings.DEFAULT_FROM_EMAIL,
+            from_email,
             [recipient_email],
             fail_silently=False,
         )
         notification.is_sent = True
+        print(f"[DEBUG] 付款失敗郵件發送成功到 {recipient_email}")
     except Exception as e:
         notification.error_message = str(e)
         logger.error(f"Failed to send payment failed email for order {order.id}: {str(e)}")
+        print(f"[DEBUG] 付款失敗郵件發送失敗: {str(e)}")
     notification.save()
