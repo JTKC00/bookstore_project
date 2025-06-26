@@ -66,7 +66,7 @@
     
     <div class="mt-4">
       <a href="/" class="btn btn-primary mr-2">返回首頁</a>
-      <a href="{% url 'orders:order_list' %}" class="btn btn-outline-secondary mr-2">我的訂單</a>
+      <a href="{% url 'orders:order_list' %}" class="btn btn-outline-dark bg-success mr-2">我的訂單</a>
       {% if order %}
         <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-outline-primary">查看訂單詳情</a>
       {% endif %}
