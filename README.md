@@ -49,6 +49,43 @@
 - **查詢管理**：後台查詢記錄管理
 
 
+
+## 🚀 使用方法
+
+### 1. 建立虛擬環境並安裝依賴
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 2. 設定環境變數
+
+請在專案根目錄建立 `.env` 檔案，並填入資料庫、郵件、Stripe 等設定。
+
+### 3. 遷移資料庫
+
+```bash
+python manage.py migrate
+```
+
+### 4. 啟動 Django 伺服器
+
+```bash
+python manage.py runserver
+```
+
+### 5. 啟動 FastAPI 搜尋服務（如有需要）
+
+請進入 FastAPI 目錄，並執行：
+uvicorn <檔案名稱>:<app物件名稱> --host 0.0.0.0 --port 8001
+```bash
+uvicorn main:app --host 0.0.0.0 --port 8001
+```
+
+---
+
 ## 🔮 未來功能規劃
 
 - [x] **庫存管理**：自動扣減庫存 ✅ 已實現
@@ -65,3 +102,4 @@
 - [ ] **會員等級**：VIP 會員系統
 - [ ] **競態條件優化**：高併發下單時的庫存鎖定
 - [ ] **用戶體驗優化**：庫存不足時的前端提示動畫
+ 
