@@ -76,13 +76,40 @@ python manage.py migrate
 python manage.py runserver
 ```
 
+
 ### 5. 啟動 FastAPI 搜尋服務（如有需要）
 
 請進入 FastAPI 目錄，並執行：
-uvicorn <檔案名稱>:<app物件名稱> --host 0.0.0.0 --port 8001
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 8001
+uvicorn <檔案名稱>:<app物件名稱> --host 0.0.0.0 --port 8001
 ```
+（例如：`uvicorn main:app --host 0.0.0.0 --port 8001`）
+
+### 6. Stripe 測試支付與 Webhook 設定
+
+1. 前往 Stripe Dashboard，取得測試金鑰，填入 `.env`。
+2. 啟動本地 Django 伺服器：
+   ```bash
+   python manage.py runserver
+   ```
+3. 使用 ngrok 暴露本地 8000 埠口：
+   ```bash
+   ngrok http 8000
+   ```
+   複製 ngrok 產生的 https 連結（如 `https://xxxx.ngrok.io`）。
+4. 在 Stripe Dashboard 設定 Webhook，URL 填入：
+   ```
+   https://xxxx.ngrok.io/payments/webhook/
+   ```
+   並選擇你需要的事件（如 `checkout.session.completed` 等）。
+5. 在網站前台進行測試支付，Stripe 會將 webhook 通知發送到你的本地伺服器。
+
+> **注意：** ngrok 每次啟動網址都會變，記得同步更新 Stripe Webhook 設定。
+
+
+## 🔒 授權條款
+
+本專案採用 MIT License 授權。詳見專案根目錄下的 LICENSE 檔案。
 
 ---
 
@@ -102,4 +129,18 @@ uvicorn main:app --host 0.0.0.0 --port 8001
 - [ ] **會員等級**：VIP 會員系統
 - [ ] **競態條件優化**：高併發下單時的庫存鎖定
 - [ ] **用戶體驗優化**：庫存不足時的前端提示動畫
- 
+
+  ---
+
+ ## 特別鳴謝
+
+感謝導師 Mr. Wai Lung Aaron 在本專案學習過程中的悉心指導與支持！
+
+ ---
+
+**注意**: 本系統為學習專案，建議在正式環境使用前進行充分測試和安全性檢查。
+
+## 聯絡資訊
+如有問題或建議，請聯絡：
+- James Tong
+- Email: kachuntong01@gmail.com
